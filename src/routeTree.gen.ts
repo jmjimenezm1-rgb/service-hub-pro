@@ -10,33 +10,115 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AplicacionesRouteImport } from './routes/aplicaciones'
+import { Route as ConsumoRouteImport } from './routes/consumo'
+import { Route as CrmRouteImport } from './routes/crm'
+import { Route as PermisosRouteImport } from './routes/permisos'
+import { Route as SuscripcionesRouteImport } from './routes/suscripciones'
+import { Route as UsuariosRouteImport } from './routes/usuarios'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AplicacionesRoute = AplicacionesRouteImport.update({
+  id: '/aplicaciones',
+  path: '/aplicaciones',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsumoRoute = ConsumoRouteImport.update({
+  id: '/consumo',
+  path: '/consumo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CrmRoute = CrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PermisosRoute = PermisosRouteImport.update({
+  id: '/permisos',
+  path: '/permisos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuscripcionesRoute = SuscripcionesRouteImport.update({
+  id: '/suscripciones',
+  path: '/suscripciones',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UsuariosRoute = UsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/aplicaciones': typeof AplicacionesRoute
+  '/consumo': typeof ConsumoRoute
+  '/crm': typeof CrmRoute
+  '/permisos': typeof PermisosRoute
+  '/suscripciones': typeof SuscripcionesRoute
+  '/usuarios': typeof UsuariosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/aplicaciones': typeof AplicacionesRoute
+  '/consumo': typeof ConsumoRoute
+  '/crm': typeof CrmRoute
+  '/permisos': typeof PermisosRoute
+  '/suscripciones': typeof SuscripcionesRoute
+  '/usuarios': typeof UsuariosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/aplicaciones': typeof AplicacionesRoute
+  '/consumo': typeof ConsumoRoute
+  '/crm': typeof CrmRoute
+  '/permisos': typeof PermisosRoute
+  '/suscripciones': typeof SuscripcionesRoute
+  '/usuarios': typeof UsuariosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/aplicaciones'
+    | '/consumo'
+    | '/crm'
+    | '/permisos'
+    | '/suscripciones'
+    | '/usuarios'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/aplicaciones'
+    | '/consumo'
+    | '/crm'
+    | '/permisos'
+    | '/suscripciones'
+    | '/usuarios'
+  id:
+    | '__root__'
+    | '/'
+    | '/aplicaciones'
+    | '/consumo'
+    | '/crm'
+    | '/permisos'
+    | '/suscripciones'
+    | '/usuarios'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AplicacionesRoute: typeof AplicacionesRoute
+  ConsumoRoute: typeof ConsumoRoute
+  CrmRoute: typeof CrmRoute
+  PermisosRoute: typeof PermisosRoute
+  SuscripcionesRoute: typeof SuscripcionesRoute
+  UsuariosRoute: typeof UsuariosRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +130,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/aplicaciones': {
+      id: '/aplicaciones'
+      path: '/aplicaciones'
+      fullPath: '/aplicaciones'
+      preLoaderRoute: typeof AplicacionesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consumo': {
+      id: '/consumo'
+      path: '/consumo'
+      fullPath: '/consumo'
+      preLoaderRoute: typeof ConsumoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/crm': {
+      id: '/crm'
+      path: '/crm'
+      fullPath: '/crm'
+      preLoaderRoute: typeof CrmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/permisos': {
+      id: '/permisos'
+      path: '/permisos'
+      fullPath: '/permisos'
+      preLoaderRoute: typeof PermisosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suscripciones': {
+      id: '/suscripciones'
+      path: '/suscripciones'
+      fullPath: '/suscripciones'
+      preLoaderRoute: typeof SuscripcionesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/usuarios': {
+      id: '/usuarios'
+      path: '/usuarios'
+      fullPath: '/usuarios'
+      preLoaderRoute: typeof UsuariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AplicacionesRoute: AplicacionesRoute,
+  ConsumoRoute: ConsumoRoute,
+  CrmRoute: CrmRoute,
+  PermisosRoute: PermisosRoute,
+  SuscripcionesRoute: SuscripcionesRoute,
+  UsuariosRoute: UsuariosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
