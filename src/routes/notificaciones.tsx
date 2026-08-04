@@ -25,13 +25,11 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import {
-  getAplicacion,
-  getCliente,
-  notificaciones,
   plantillasNotificacion,
   type CanalNotificacion,
   type Notificacion,
 } from "@/lib/mock-data";
+import { useCatalogo, useNotificaciones } from "@/lib/db";
 
 export const Route = createFileRoute("/notificaciones")({
   head: () => ({

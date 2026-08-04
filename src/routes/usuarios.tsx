@@ -7,7 +7,8 @@ import { DataTable, type Columna } from "@/components/shared/DataTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { getAplicacion, getCliente, usuarios, type Usuario } from "@/lib/mock-data";
+import { type Usuario } from "@/lib/mock-data";
+import { useCatalogo, useUsuarios } from "@/lib/db";
 
 export const Route = createFileRoute("/usuarios")({
   head: () => ({
@@ -25,6 +26,8 @@ export const Route = createFileRoute("/usuarios")({
 });
 
 function UsuariosPage() {
+  const usuarios = useUsuarios();
+  const { getAplicacion, getCliente } = useCatalogo();
   const columnas: Columna<Usuario>[] = [
     {
       key: "usuario",

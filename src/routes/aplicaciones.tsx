@@ -4,7 +4,8 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { aplicaciones, eur, suscripciones } from "@/lib/mock-data";
+import { eur } from "@/lib/mock-data";
+import { useAplicaciones, useSuscripciones } from "@/lib/db";
 
 export const Route = createFileRoute("/aplicaciones")({
   head: () => ({
@@ -29,6 +30,8 @@ const etiquetaModelo: Record<string, string> = {
 };
 
 function AplicacionesPage() {
+  const aplicaciones = useAplicaciones();
+  const suscripciones = useSuscripciones();
   return (
     <>
       <PageHeader

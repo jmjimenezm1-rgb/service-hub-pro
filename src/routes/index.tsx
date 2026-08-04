@@ -27,19 +27,18 @@ import { StatCard } from "@/components/shared/StatCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import {
   alertas,
-  aplicaciones,
-  clientes,
-  consumos,
   eur,
   fecha,
-  getAplicacion,
-  getCliente,
   num,
   serieFacturacion,
   serieUsuariosActivos,
-  suscripciones,
-  usuarios,
 } from "@/lib/mock-data";
+import {
+  useCatalogo,
+  useConsumos,
+  useSuscripciones,
+  useUsuarios,
+} from "@/lib/db";
 
 export const Route = createFileRoute("/")({
   head: () => ({
