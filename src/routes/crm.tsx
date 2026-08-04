@@ -28,6 +28,9 @@ export const Route = createFileRoute("/crm")({
 
 function CrmPage() {
   const [seleccionado, setSeleccionado] = useState<Cliente | null>(null);
+  const clientes = useClientes();
+  const suscripciones = useSuscripciones();
+  const usuarios = useUsuarios();
 
   const columnas: Columna<Cliente>[] = [
     {
