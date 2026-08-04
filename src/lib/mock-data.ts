@@ -976,7 +976,7 @@ export interface Notificacion extends BaseEntity {
   enviadaEn: string;
 }
 
-const base = (id: number) => ({
+const baseNotif = (id: number) => ({
   id,
   creadoEn: "2026-07-01T09:00:00Z",
   actualizadoEn: "2026-08-01T09:00:00Z",
@@ -985,7 +985,7 @@ const base = (id: number) => ({
 
 export const notificaciones: Notificacion[] = [
   {
-    ...base(1),
+    ...baseNotif(1),
     asunto: "Renovación de TeamDesk el 28/02",
     mensaje: "El contrato de TeamDesk para Nordeste Salud vence en 15 días y no tiene renovación automática activada.",
     canal: "email",
@@ -999,7 +999,7 @@ export const notificaciones: Notificacion[] = [
     enviadaEn: "2026-08-04T08:12:00Z",
   },
   {
-    ...base(2),
+    ...baseNotif(2),
     asunto: "Segundo aviso de impago (9.870 €)",
     mensaje: "Atlas Logistics acumula 2 facturas vencidas. Se suspenderá el servicio en 7 días si no se regulariza.",
     canal: "email",
@@ -1012,7 +1012,7 @@ export const notificaciones: Notificacion[] = [
     enviadaEn: "2026-08-04T07:40:00Z",
   },
   {
-    ...base(3),
+    ...baseNotif(3),
     asunto: "Consumo al 97% del límite contratado",
     mensaje: "Nordeste Salud ha consumido el 97% de los documentos incluidos en DocuFlow este periodo.",
     canal: "interna",
@@ -1026,7 +1026,7 @@ export const notificaciones: Notificacion[] = [
     enviadaEn: "2026-08-04T05:20:00Z",
   },
   {
-    ...base(4),
+    ...baseNotif(4),
     asunto: "Nuevo inicio de sesión sin MFA",
     mensaje: "Se ha detectado un acceso desde una IP nueva en una cuenta sin doble factor activado.",
     canal: "interna",
@@ -1038,7 +1038,7 @@ export const notificaciones: Notificacion[] = [
     enviadaEn: "2026-08-03T22:05:00Z",
   },
   {
-    ...base(5),
+    ...baseNotif(5),
     asunto: "Fin de periodo de prueba en 4 días",
     mensaje: "El periodo de prueba de Iberia Motor finaliza el 08/08. Contacta para convertir la cuenta.",
     canal: "email",
@@ -1051,7 +1051,7 @@ export const notificaciones: Notificacion[] = [
     enviadaEn: "2026-08-03T10:00:00Z",
   },
   {
-    ...base(6),
+    ...baseNotif(6),
     asunto: "Webhook de facturación no entregado",
     mensaje: "El endpoint de integración devolvió 500 en 3 reintentos consecutivos.",
     canal: "webhook",
@@ -1064,7 +1064,7 @@ export const notificaciones: Notificacion[] = [
     enviadaEn: "2026-08-03T04:31:00Z",
   },
   {
-    ...base(7),
+    ...baseNotif(7),
     asunto: "Mantenimiento programado de FinPulse",
     mensaje: "Ventana de mantenimiento el domingo de 02:00 a 04:00 CET. Servicio en modo lectura.",
     canal: "email",
@@ -1076,7 +1076,7 @@ export const notificaciones: Notificacion[] = [
     enviadaEn: "2026-08-02T16:45:00Z",
   },
   {
-    ...base(8),
+    ...baseNotif(8),
     asunto: "Aviso de renovación automática",
     mensaje: "La suscripción de CloudMetrics se renovará automáticamente el 01/09 por 12 meses.",
     canal: "email",
@@ -1089,7 +1089,7 @@ export const notificaciones: Notificacion[] = [
     enviadaEn: "2026-08-02T09:15:00Z",
   },
   {
-    ...base(9),
+    ...baseNotif(9),
     asunto: "SMS de recordatorio de pago",
     mensaje: "Recordatorio de la factura F-2026-0184 con vencimiento mañana.",
     canal: "sms",
@@ -1102,7 +1102,7 @@ export const notificaciones: Notificacion[] = [
     enviadaEn: "2026-08-01T11:00:00Z",
   },
   {
-    ...base(10),
+    ...baseNotif(10),
     asunto: "Exceso de llamadas API facturable",
     mensaje: "Grupo Vertex superó en 18% las llamadas API incluidas; se facturará el excedente.",
     canal: "interna",
