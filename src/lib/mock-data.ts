@@ -949,6 +949,192 @@ export const alertas = [
   { id: 4, tipo: "prueba" as const, texto: "El periodo de prueba de Iberia Motor finaliza en 4 días.", fecha: "ayer" },
 ];
 
+/* --------------------------- 7 · Notificaciones ------------------------- */
+
+export type CanalNotificacion = "email" | "interna" | "sms" | "webhook";
+export type CategoriaNotificacion =
+  | "renovacion"
+  | "impago"
+  | "consumo"
+  | "seguridad"
+  | "sistema"
+  | "comercial";
+export type EstadoNotificacion = "enviada" | "pendiente" | "leida" | "fallida";
+export type PrioridadNotificacion = "alta" | "media" | "baja";
+
+export interface Notificacion extends BaseEntity {
+  asunto: string;
+  mensaje: string;
+  canal: CanalNotificacion;
+  categoria: CategoriaNotificacion;
+  estado: EstadoNotificacion;
+  prioridad: PrioridadNotificacion;
+  destinatario: string;
+  clienteId?: number;
+  aplicacionId?: number;
+  plantilla: string;
+  enviadaEn: string;
+}
+
+const baseNotif = (id: number) => base(600 + id, "2026-08-01");
+
+export const notificaciones: Notificacion[] = [
+  {
+    ...baseNotif(1),
+    asunto: "Renovación de TeamDesk el 28/02",
+    mensaje: "El contrato de TeamDesk para Nordeste Salud vence en 15 días y no tiene renovación automática activada.",
+    canal: "email",
+    categoria: "renovacion",
+    estado: "enviada",
+    prioridad: "alta",
+    destinatario: "direccion@nordestesalud.es",
+    clienteId: 2,
+    aplicacionId: 3,
+    plantilla: "renovacion-proxima",
+    enviadaEn: "2026-08-04T08:12:00Z",
+  },
+  {
+    ...baseNotif(2),
+    asunto: "Segundo aviso de impago (9.870 €)",
+    mensaje: "Atlas Logistics acumula 2 facturas vencidas. Se suspenderá el servicio en 7 días si no se regulariza.",
+    canal: "email",
+    categoria: "impago",
+    estado: "enviada",
+    prioridad: "alta",
+    destinatario: "finanzas@atlaslogistics.com",
+    clienteId: 3,
+    plantilla: "impago-segundo-aviso",
+    enviadaEn: "2026-08-04T07:40:00Z",
+  },
+  {
+    ...baseNotif(3),
+    asunto: "Consumo al 97% del límite contratado",
+    mensaje: "Nordeste Salud ha consumido el 97% de los documentos incluidos en DocuFlow este periodo.",
+    canal: "interna",
+    categoria: "consumo",
+    estado: "leida",
+    prioridad: "media",
+    destinatario: "Equipo de Operaciones",
+    clienteId: 2,
+    aplicacionId: 2,
+    plantilla: "limite-consumo",
+    enviadaEn: "2026-08-04T05:20:00Z",
+  },
+  {
+    ...baseNotif(4),
+    asunto: "Nuevo inicio de sesión sin MFA",
+    mensaje: "Se ha detectado un acceso desde una IP nueva en una cuenta sin doble factor activado.",
+    canal: "interna",
+    categoria: "seguridad",
+    estado: "pendiente",
+    prioridad: "alta",
+    destinatario: "seguridad@servicehub.io",
+    plantilla: "acceso-sospechoso",
+    enviadaEn: "2026-08-03T22:05:00Z",
+  },
+  {
+    ...baseNotif(5),
+    asunto: "Fin de periodo de prueba en 4 días",
+    mensaje: "El periodo de prueba de Iberia Motor finaliza el 08/08. Contacta para convertir la cuenta.",
+    canal: "email",
+    categoria: "comercial",
+    estado: "enviada",
+    prioridad: "media",
+    destinatario: "comercial@servicehub.io",
+    clienteId: 4,
+    plantilla: "fin-prueba",
+    enviadaEn: "2026-08-03T10:00:00Z",
+  },
+  {
+    ...baseNotif(6),
+    asunto: "Webhook de facturación no entregado",
+    mensaje: "El endpoint de integración devolvió 500 en 3 reintentos consecutivos.",
+    canal: "webhook",
+    categoria: "sistema",
+    estado: "fallida",
+    prioridad: "alta",
+    destinatario: "https://erp.cliente.com/hooks/facturacion",
+    clienteId: 1,
+    plantilla: "webhook-error",
+    enviadaEn: "2026-08-03T04:31:00Z",
+  },
+  {
+    ...baseNotif(7),
+    asunto: "Mantenimiento programado de FinPulse",
+    mensaje: "Ventana de mantenimiento el domingo de 02:00 a 04:00 CET. Servicio en modo lectura.",
+    canal: "email",
+    categoria: "sistema",
+    estado: "enviada",
+    prioridad: "baja",
+    destinatario: "todos-los-clientes",
+    plantilla: "mantenimiento",
+    enviadaEn: "2026-08-02T16:45:00Z",
+  },
+  {
+    ...baseNotif(8),
+    asunto: "Aviso de renovación automática",
+    mensaje: "La suscripción de CloudMetrics se renovará automáticamente el 01/09 por 12 meses.",
+    canal: "email",
+    categoria: "renovacion",
+    estado: "pendiente",
+    prioridad: "baja",
+    destinatario: "it@grupovertex.es",
+    clienteId: 1,
+    plantilla: "renovacion-automatica",
+    enviadaEn: "2026-08-02T09:15:00Z",
+  },
+  {
+    ...baseNotif(9),
+    asunto: "SMS de recordatorio de pago",
+    mensaje: "Recordatorio de la factura F-2026-0184 con vencimiento mañana.",
+    canal: "sms",
+    categoria: "impago",
+    estado: "enviada",
+    prioridad: "media",
+    destinatario: "+34 600 112 233",
+    clienteId: 5,
+    plantilla: "recordatorio-pago",
+    enviadaEn: "2026-08-01T11:00:00Z",
+  },
+  {
+    ...baseNotif(10),
+    asunto: "Exceso de llamadas API facturable",
+    mensaje: "Grupo Vertex superó en 18% las llamadas API incluidas; se facturará el excedente.",
+    canal: "interna",
+    categoria: "consumo",
+    estado: "leida",
+    prioridad: "media",
+    destinatario: "Equipo Financiero",
+    clienteId: 1,
+    aplicacionId: 1,
+    plantilla: "exceso-api",
+    enviadaEn: "2026-08-01T08:30:00Z",
+  },
+];
+
+export interface PlantillaNotificacion {
+  id: string;
+  nombre: string;
+  categoria: CategoriaNotificacion;
+  canales: CanalNotificacion[];
+  disparador: string;
+  activa: boolean;
+}
+
+export const plantillasNotificacion: PlantillaNotificacion[] = [
+  { id: "renovacion-proxima", nombre: "Renovación próxima", categoria: "renovacion", canales: ["email", "interna"], disparador: "30, 15 y 7 días antes del vencimiento", activa: true },
+  { id: "renovacion-automatica", nombre: "Confirmación de renovación", categoria: "renovacion", canales: ["email"], disparador: "Al renovar automáticamente un contrato", activa: true },
+  { id: "impago-segundo-aviso", nombre: "Aviso de impago", categoria: "impago", canales: ["email", "sms"], disparador: "3, 10 y 20 días tras el vencimiento", activa: true },
+  { id: "limite-consumo", nombre: "Límite de consumo", categoria: "consumo", canales: ["interna", "email"], disparador: "Al alcanzar el 80% y el 95% del límite", activa: true },
+  { id: "exceso-api", nombre: "Excedente facturable", categoria: "consumo", canales: ["interna"], disparador: "Al superar el consumo contratado", activa: true },
+  { id: "acceso-sospechoso", nombre: "Acceso sospechoso", categoria: "seguridad", canales: ["interna", "email"], disparador: "Login desde IP o dispositivo nuevo", activa: true },
+  { id: "fin-prueba", nombre: "Fin de periodo de prueba", categoria: "comercial", canales: ["email"], disparador: "7 y 3 días antes de finalizar la prueba", activa: true },
+  { id: "mantenimiento", nombre: "Mantenimiento programado", categoria: "sistema", canales: ["email", "interna"], disparador: "Publicación de ventana de mantenimiento", activa: true },
+  { id: "webhook-error", nombre: "Error de integración", categoria: "sistema", canales: ["interna", "webhook"], disparador: "3 fallos consecutivos de entrega", activa: false },
+  { id: "recordatorio-pago", nombre: "Recordatorio de pago", categoria: "impago", canales: ["sms", "email"], disparador: "1 día antes del vencimiento", activa: true },
+];
+
+
 /* ------------------------------ Helpers -------------------------------- */
 
 export const getCliente = (id: number) => clientes.find((c) => c.id === id);

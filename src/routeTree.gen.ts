@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AplicacionesRouteImport } from './routes/aplicaciones'
 import { Route as ConsumoRouteImport } from './routes/consumo'
 import { Route as CrmRouteImport } from './routes/crm'
+import { Route as NotificacionesRouteImport } from './routes/notificaciones'
 import { Route as PermisosRouteImport } from './routes/permisos'
 import { Route as SuscripcionesRouteImport } from './routes/suscripciones'
 import { Route as UsuariosRouteImport } from './routes/usuarios'
@@ -37,6 +38,11 @@ const CrmRoute = CrmRouteImport.update({
   path: '/crm',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NotificacionesRoute = NotificacionesRouteImport.update({
+  id: '/notificaciones',
+  path: '/notificaciones',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PermisosRoute = PermisosRouteImport.update({
   id: '/permisos',
   path: '/permisos',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/aplicaciones': typeof AplicacionesRoute
   '/consumo': typeof ConsumoRoute
   '/crm': typeof CrmRoute
+  '/notificaciones': typeof NotificacionesRoute
   '/permisos': typeof PermisosRoute
   '/suscripciones': typeof SuscripcionesRoute
   '/usuarios': typeof UsuariosRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/aplicaciones': typeof AplicacionesRoute
   '/consumo': typeof ConsumoRoute
   '/crm': typeof CrmRoute
+  '/notificaciones': typeof NotificacionesRoute
   '/permisos': typeof PermisosRoute
   '/suscripciones': typeof SuscripcionesRoute
   '/usuarios': typeof UsuariosRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/aplicaciones': typeof AplicacionesRoute
   '/consumo': typeof ConsumoRoute
   '/crm': typeof CrmRoute
+  '/notificaciones': typeof NotificacionesRoute
   '/permisos': typeof PermisosRoute
   '/suscripciones': typeof SuscripcionesRoute
   '/usuarios': typeof UsuariosRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/aplicaciones'
     | '/consumo'
     | '/crm'
+    | '/notificaciones'
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/aplicaciones'
     | '/consumo'
     | '/crm'
+    | '/notificaciones'
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/aplicaciones'
     | '/consumo'
     | '/crm'
+    | '/notificaciones'
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   AplicacionesRoute: typeof AplicacionesRoute
   ConsumoRoute: typeof ConsumoRoute
   CrmRoute: typeof CrmRoute
+  NotificacionesRoute: typeof NotificacionesRoute
   PermisosRoute: typeof PermisosRoute
   SuscripcionesRoute: typeof SuscripcionesRoute
   UsuariosRoute: typeof UsuariosRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CrmRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notificaciones': {
+      id: '/notificaciones'
+      path: '/notificaciones'
+      fullPath: '/notificaciones'
+      preLoaderRoute: typeof NotificacionesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/permisos': {
       id: '/permisos'
       path: '/permisos'
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AplicacionesRoute: AplicacionesRoute,
   ConsumoRoute: ConsumoRoute,
   CrmRoute: CrmRoute,
+  NotificacionesRoute: NotificacionesRoute,
   PermisosRoute: PermisosRoute,
   SuscripcionesRoute: SuscripcionesRoute,
   UsuariosRoute: UsuariosRoute,
