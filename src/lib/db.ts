@@ -17,7 +17,8 @@ import type {
  * de forma que los módulos permanecen desacoplados del esquema físico.
  */
 
-type Row = Record<string, any>;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+type Row = any;
 
 const auditoria = (r: Row) => ({
   id: Number(r.id),
