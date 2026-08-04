@@ -60,6 +60,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
+  const { clientes, aplicaciones, getAplicacion, getCliente } = useCatalogo();
+  const suscripciones = useSuscripciones();
+  const usuarios = useUsuarios();
+  const consumos = useConsumos();
   const activos = clientes.filter((c) => c.estado === "activo").length;
   const prueba = clientes.filter((c) => c.estado === "prueba").length;
   const impagos = clientes.filter((c) => c.estado === "impago").length;

@@ -63,6 +63,8 @@ const fechaHora = (iso: string) =>
   new Intl.DateTimeFormat("es-ES", { dateStyle: "short", timeStyle: "short" }).format(new Date(iso));
 
 function NotificacionesPage() {
+  const notificaciones = useNotificaciones();
+  const { getAplicacion, getCliente } = useCatalogo();
   const [seleccion, setSeleccion] = useState<Notificacion | null>(null);
 
   const columnas: Columna<Notificacion>[] = [
