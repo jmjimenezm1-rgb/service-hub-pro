@@ -976,12 +976,7 @@ export interface Notificacion extends BaseEntity {
   enviadaEn: string;
 }
 
-const baseNotif = (id: number) => ({
-  id,
-  creadoEn: "2026-07-01T09:00:00Z",
-  actualizadoEn: "2026-08-01T09:00:00Z",
-  eliminadoEn: null,
-});
+const baseNotif = (id: number) => base(600 + id, "2026-08-01");
 
 export const notificaciones: Notificacion[] = [
   {
