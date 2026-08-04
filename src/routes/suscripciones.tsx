@@ -6,15 +6,8 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable, type Columna } from "@/components/shared/DataTable";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import {
-  eur,
-  fecha,
-  getAplicacion,
-  getCliente,
-  num,
-  suscripciones,
-  type Suscripcion,
-} from "@/lib/mock-data";
+import { eur, fecha, num, type Suscripcion } from "@/lib/mock-data";
+import { useCatalogo, useSuscripciones } from "@/lib/db";
 
 export const Route = createFileRoute("/suscripciones")({
   head: () => ({
@@ -39,6 +32,8 @@ const etiquetaModalidad: Record<string, string> = {
 };
 
 function SuscripcionesPage() {
+  const suscripciones = useSuscripciones();
+  const { getAplicacion, getCliente } = useCatalogo();
   const activas = suscripciones.filter((s) => s.estado === "activa");
   const ingresos = activas.reduce((s, x) => s + x.precio * (1 - x.descuento / 100), 0);
 

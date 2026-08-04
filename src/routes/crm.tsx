@@ -8,7 +8,8 @@ import { DataTable, type Columna } from "@/components/shared/DataTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { clientes, eur, fecha, suscripciones, usuarios, type Cliente } from "@/lib/mock-data";
+import { eur, fecha, type Cliente } from "@/lib/mock-data";
+import { useClientes, useSuscripciones, useUsuarios } from "@/lib/db";
 
 export const Route = createFileRoute("/crm")({
   head: () => ({
@@ -27,6 +28,9 @@ export const Route = createFileRoute("/crm")({
 
 function CrmPage() {
   const [seleccionado, setSeleccionado] = useState<Cliente | null>(null);
+  const clientes = useClientes();
+  const suscripciones = useSuscripciones();
+  const usuarios = useUsuarios();
 
   const columnas: Columna<Cliente>[] = [
     {

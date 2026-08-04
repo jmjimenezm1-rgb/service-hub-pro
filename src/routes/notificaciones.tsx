@@ -25,13 +25,11 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import {
-  getAplicacion,
-  getCliente,
-  notificaciones,
   plantillasNotificacion,
   type CanalNotificacion,
   type Notificacion,
 } from "@/lib/mock-data";
+import { useCatalogo, useNotificaciones } from "@/lib/db";
 
 export const Route = createFileRoute("/notificaciones")({
   head: () => ({
@@ -65,6 +63,8 @@ const fechaHora = (iso: string) =>
   new Intl.DateTimeFormat("es-ES", { dateStyle: "short", timeStyle: "short" }).format(new Date(iso));
 
 function NotificacionesPage() {
+  const notificaciones = useNotificaciones();
+  const { getAplicacion, getCliente } = useCatalogo();
   const [seleccion, setSeleccion] = useState<Notificacion | null>(null);
 
   const columnas: Columna<Notificacion>[] = [

@@ -6,14 +6,8 @@ import { DataTable, type Columna } from "@/components/shared/DataTable";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import {
-  consumos,
-  eur,
-  getAplicacion,
-  getCliente,
-  num,
-  type RegistroConsumo,
-} from "@/lib/mock-data";
+import { eur, num, type RegistroConsumo } from "@/lib/mock-data";
+import { useCatalogo, useConsumos } from "@/lib/db";
 
 export const Route = createFileRoute("/consumo")({
   head: () => ({
@@ -31,6 +25,8 @@ export const Route = createFileRoute("/consumo")({
 });
 
 function ConsumoPage() {
+  const consumos = useConsumos();
+  const { getAplicacion, getCliente } = useCatalogo();
   const costeTotal = consumos.reduce((s, c) => s + c.consumido * c.costeUnitario, 0);
   const excedidos = consumos.filter((c) => c.incluido > 0 && c.consumido > c.incluido);
 
