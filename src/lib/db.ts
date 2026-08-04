@@ -128,8 +128,8 @@ const aNotificacion = (r: Row): Notificacion => ({
   estado: r.estado,
   prioridad: r.prioridad,
   destinatario: r.destinatario,
-  clienteId: r.cliente_id === null ? undefined : Number(r.cliente_id),
-  aplicacionId: r.aplicacion_id === null ? undefined : Number(r.aplicacion_id),
+  ...(r.cliente_id === null ? {} : { clienteId: Number(r.cliente_id) }),
+  ...(r.aplicacion_id === null ? {} : { aplicacionId: Number(r.aplicacion_id) }),
   plantilla: r.plantilla,
   enviadaEn: r.enviada_en,
 });
