@@ -37,7 +37,7 @@ export const modulos: ModuloDef[] = [
   { id: "usuarios", nombre: "Usuarios", icono: UserCog, ruta: "/usuarios", grupo: "Plataforma", disponible: true },
   { id: "permisos", nombre: "Roles y permisos", icono: ShieldCheck, ruta: "/permisos", grupo: "Plataforma", disponible: true },
   { id: "consumo", nombre: "Gestión del uso", icono: Activity, ruta: "/consumo", grupo: "Plataforma", disponible: true },
-  { id: "notificaciones", nombre: "Notificaciones", icono: Bell, grupo: "Plataforma", disponible: false },
+  { id: "notificaciones", nombre: "Notificaciones", icono: Bell, ruta: "/notificaciones", grupo: "Plataforma", disponible: true },
   { id: "facturacion", nombre: "Facturación", icono: ReceiptEuro, grupo: "Finanzas", disponible: false },
   { id: "cobros", nombre: "Cobros", icono: Banknote, grupo: "Finanzas", disponible: false },
   { id: "financiero", nombre: "Financiero (ERP)", icono: Calculator, grupo: "Finanzas", disponible: false },
