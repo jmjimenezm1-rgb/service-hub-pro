@@ -44,7 +44,7 @@ function SuscripcionesPage() {
     setFormAbierto(true);
   };
   const suscripciones = useSuscripciones();
-  const { getAplicacion, getCliente } = useCatalogo();
+  const { getAplicacion, getCliente, clientes, aplicaciones } = useCatalogo();
   const activas = suscripciones.filter((s) => s.estado === "activa");
   const ingresos = activas.reduce((s, x) => s + x.precio * (1 - x.descuento / 100), 0);
 
