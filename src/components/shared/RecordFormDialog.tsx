@@ -27,6 +27,7 @@ export type Campo = {
   tipo?: "texto" | "numero" | "fecha" | "email" | "textarea" | "select" | "switch";
   opciones?: { value: string; label: string }[];
   requerido?: boolean;
+  numerico?: boolean;
   ancho?: "full";
   placeholder?: string;
 };
@@ -70,7 +71,9 @@ export function RecordFormDialog({
     for (const c of campos) {
       const v = valores[c.name];
       limpio[c.name] =
-        c.tipo === "numero"
+        c.tipo === "select" && c.numerico
+          ? (v === "" || v == null ? null : Number(v))
+          : c.tipo === "numero"
           ? Number(v ?? 0)
           : c.tipo === "switch"
             ? !!v
