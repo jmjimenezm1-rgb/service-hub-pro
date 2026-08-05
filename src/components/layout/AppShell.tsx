@@ -173,6 +173,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Button variant="ghost" size="icon" onClick={toggle} aria-label="Cambiar tema">
               {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
             </Button>
+            <BotonSesion />
           </div>
         </header>
 
