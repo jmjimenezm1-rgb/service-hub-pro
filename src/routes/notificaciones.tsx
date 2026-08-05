@@ -30,6 +30,9 @@ import {
   type Notificacion,
 } from "@/lib/mock-data";
 import { useCatalogo, useNotificaciones } from "@/lib/db";
+import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
+import { camposNotificacion, filaNotificacion } from "@/lib/form-defs";
+import { useGuardarRegistro } from "@/lib/mutations";
 
 export const Route = createFileRoute("/notificaciones")({
   head: () => ({
