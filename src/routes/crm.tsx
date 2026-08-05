@@ -10,6 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { eur, fecha, type Cliente } from "@/lib/mock-data";
 import { useClientes, useSuscripciones, useUsuarios } from "@/lib/db";
+import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
+import { camposCliente, filaCliente } from "@/lib/form-defs";
+import { useEliminarRegistro, useGuardarRegistro } from "@/lib/mutations";
 
 export const Route = createFileRoute("/crm")({
   head: () => ({
@@ -28,6 +31,16 @@ export const Route = createFileRoute("/crm")({
 
 function CrmPage() {
   const [seleccionado, setSeleccionado] = useState<Cliente | null>(null);
+  const [editando, setEditando] = useState<Cliente | null>(null);
+  const [formAbierto, setFormAbierto] = useState(false);
+  const guardar = useGuardarRegistro("clientes", "clientes", "Cliente");
+  const eliminar = useEliminarRegistro("clientes", "clientes", "Cliente");
+
+  const abrirForm = (c: Cliente | null) => {
+    setEditando(c);
+    setFormAbierto(true);
+  };
+
   const clientes = useClientes();
   const suscripciones = useSuscripciones();
   const usuarios = useUsuarios();
@@ -63,7 +76,7 @@ function CrmPage() {
         titulo="CRM · Clientes"
         descripcion="Prospección, alta, contratación, seguimiento y baja de empresas cliente."
         acciones={
-          <Button>
+          <Button onClick={() => abrirForm(null)}>
             <Plus className="size-4" /> Nuevo cliente
           </Button>
         }
@@ -95,6 +108,22 @@ function CrmPage() {
         ]}
       />
 
+      <RecordFormDialog
+        open={formAbierto}
+        onOpenChange={setFormAbierto}
+        titulo={editando ? `Editar ${editando.nombreComercial}` : "Nuevo cliente"}
+        descripcion="Datos fiscales, contacto y estado comercial del cliente."
+        campos={camposCliente}
+        valoresIniciales={filaCliente(editando)}
+        guardando={guardar.isPending}
+        onSubmit={(valores) =>
+          guardar.mutate(
+            { ...(editando ? { id: editando.id } : {}), valores },
+            { onSuccess: () => setFormAbierto(false) },
+          )
+        }
+      />
+
       <Sheet open={!!seleccionado} onOpenChange={(o) => !o && setSeleccionado(null)}>
         <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
           {seleccionado && (
@@ -104,6 +133,27 @@ function CrmPage() {
                 <p className="text-sm text-muted-foreground">{seleccionado.razonSocial}</p>
               </SheetHeader>
               <div className="space-y-6 px-4 pb-8">
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      abrirForm(seleccionado);
+                      setSeleccionado(null);
+                    }}
+                  >
+                    Editar ficha
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      eliminar.mutate(seleccionado.id);
+                      setSeleccionado(null);
+                    }}
+                  >
+                    Dar de baja
+                  </Button>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   <StatusBadge estado={seleccionado.estado} />
                   {seleccionado.etiquetas.map((e) => (

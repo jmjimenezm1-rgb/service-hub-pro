@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Repeat } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -8,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { eur, fecha, num, type Suscripcion } from "@/lib/mock-data";
 import { useCatalogo, useSuscripciones } from "@/lib/db";
+import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
+import { camposSuscripcion, filaSuscripcion } from "@/lib/form-defs";
+import { useGuardarRegistro } from "@/lib/mutations";
 
 export const Route = createFileRoute("/suscripciones")({
   head: () => ({
@@ -32,8 +36,15 @@ const etiquetaModalidad: Record<string, string> = {
 };
 
 function SuscripcionesPage() {
+  const [editando, setEditando] = useState<Suscripcion | null>(null);
+  const [formAbierto, setFormAbierto] = useState(false);
+  const guardar = useGuardarRegistro("suscripciones", "suscripciones", "Suscripción");
+  const abrirForm = (x: Suscripcion | null) => {
+    setEditando(x);
+    setFormAbierto(true);
+  };
   const suscripciones = useSuscripciones();
-  const { getAplicacion, getCliente } = useCatalogo();
+  const { getAplicacion, getCliente, clientes, aplicaciones } = useCatalogo();
   const activas = suscripciones.filter((s) => s.estado === "activa");
   const ingresos = activas.reduce((s, x) => s + x.precio * (1 - x.descuento / 100), 0);
 
@@ -94,7 +105,7 @@ function SuscripcionesPage() {
         titulo="Suscripciones"
         descripcion="Contratos de aplicaciones por cliente, consumo contratado frente a real y renovaciones."
         acciones={
-          <Button>
+          <Button onClick={() => abrirForm(null)}>
             <Plus className="size-4" /> Nueva suscripción
           </Button>
         }
@@ -114,6 +125,7 @@ function SuscripcionesPage() {
         data={suscripciones}
         columnas={columnas}
         porPagina={10}
+        onRowClick={abrirForm}
         buscar={(s) =>
           `${getCliente(s.clienteId)?.nombreComercial} ${getAplicacion(s.aplicacionId)?.nombre} ${s.periodicidad}`
         }
@@ -125,6 +137,22 @@ function SuscripcionesPage() {
             match: (s, v) => s.periodicidad === v,
           },
         ]}
+      />
+
+      <RecordFormDialog
+        open={formAbierto}
+        onOpenChange={setFormAbierto}
+        titulo={editando ? `Editar suscripción #${editando.id}` : "Nueva suscripción"}
+        descripcion="Contrato de una aplicación para un cliente: fechas, modalidad, consumo y precio."
+        campos={camposSuscripcion(clientes, aplicaciones)}
+        valoresIniciales={filaSuscripcion(editando)}
+        guardando={guardar.isPending}
+        onSubmit={(valores) =>
+          guardar.mutate(
+            { ...(editando ? { id: editando.id } : {}), valores },
+            { onSuccess: () => setFormAbierto(false) },
+          )
+        }
       />
     </>
   );

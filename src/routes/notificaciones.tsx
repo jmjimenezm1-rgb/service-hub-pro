@@ -30,6 +30,9 @@ import {
   type Notificacion,
 } from "@/lib/mock-data";
 import { useCatalogo, useNotificaciones } from "@/lib/db";
+import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
+import { camposNotificacion, filaNotificacion } from "@/lib/form-defs";
+import { useGuardarRegistro } from "@/lib/mutations";
 
 export const Route = createFileRoute("/notificaciones")({
   head: () => ({
@@ -66,6 +69,8 @@ function NotificacionesPage() {
   const notificaciones = useNotificaciones();
   const { getAplicacion, getCliente } = useCatalogo();
   const [seleccion, setSeleccion] = useState<Notificacion | null>(null);
+  const [formAbierto, setFormAbierto] = useState(false);
+  const guardar = useGuardarRegistro("notificaciones", "notificaciones", "Notificación");
 
   const columnas: Columna<Notificacion>[] = [
     {
@@ -129,7 +134,7 @@ function NotificacionesPage() {
             <Button variant="outline">
               <CheckCheck className="size-4" /> Marcar todo como leído
             </Button>
-            <Button>
+            <Button onClick={() => setFormAbierto(true)}>
               <Send className="size-4" /> Nueva notificación
             </Button>
           </>
@@ -192,6 +197,19 @@ function NotificacionesPage() {
           ))}
         </div>
       </section>
+
+      <RecordFormDialog
+        open={formAbierto}
+        onOpenChange={setFormAbierto}
+        titulo="Nueva notificación"
+        descripcion="Envío manual a través del centro de notificaciones."
+        campos={camposNotificacion}
+        valoresIniciales={filaNotificacion(null)}
+        guardando={guardar.isPending}
+        onSubmit={(valores) =>
+          guardar.mutate({ valores }, { onSuccess: () => setFormAbierto(false) })
+        }
+      />
 
       <Sheet open={!!seleccion} onOpenChange={(o) => !o && setSeleccion(null)}>
         <SheetContent className="w-full overflow-y-auto sm:max-w-lg">

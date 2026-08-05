@@ -1,7 +1,10 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, Moon, Sun, Search, Bell, Layers, Lock } from "lucide-react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { Menu, Moon, Sun, Search, Bell, Layers, Lock, LogIn, LogOut } from "lucide-react";
 import { grupos, modulos } from "@/lib/modules";
+import { supabase } from "@/integrations/supabase/client";
+import { useSesion } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -84,11 +87,53 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       ))}
 
-      <div className="mt-auto rounded-xl border border-sidebar-border bg-sidebar-accent/50 p-3">
-        <p className="text-xs font-medium text-sidebar-accent-foreground">Laura Beltrán</p>
-        <p className="text-[11px] text-sidebar-foreground/60">Administrador General</p>
-      </div>
+      <SesionCard />
     </nav>
+  );
+}
+
+function SesionCard() {
+  const { sesion } = useSesion();
+  return (
+    <div className="mt-auto rounded-xl border border-sidebar-border bg-sidebar-accent/50 p-3">
+      <p className="truncate text-xs font-medium text-sidebar-accent-foreground">
+        {sesion?.user.email ?? "Sin sesión"}
+      </p>
+      <p className="text-[11px] text-sidebar-foreground/60">
+        {sesion ? "Administrador General" : "Solo lectura"}
+      </p>
+    </div>
+  );
+}
+
+function BotonSesion() {
+  const { sesion } = useSesion();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  if (!sesion) {
+    return (
+      <Button asChild variant="outline" size="sm">
+        <Link to="/auth">
+          <LogIn className="size-4" /> Iniciar sesión
+        </Link>
+      </Button>
+    );
+  }
+
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={async () => {
+        await queryClient.cancelQueries();
+        queryClient.clear();
+        await supabase.auth.signOut();
+        navigate({ to: "/auth", replace: true });
+      }}
+    >
+      <LogOut className="size-4" /> Salir
+    </Button>
   );
 }
 
@@ -128,6 +173,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Button variant="ghost" size="icon" onClick={toggle} aria-label="Cambiar tema">
               {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
             </Button>
+            <BotonSesion />
           </div>
         </header>
 

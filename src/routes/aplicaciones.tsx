@@ -1,11 +1,15 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, ExternalLink, BookOpen, Code2 } from "lucide-react";
+import { Plus, ExternalLink, BookOpen, Code2, Pencil } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { eur } from "@/lib/mock-data";
+import { eur, type Aplicacion } from "@/lib/mock-data";
 import { useAplicaciones, useSuscripciones } from "@/lib/db";
+import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
+import { camposAplicacion, filaAplicacion } from "@/lib/form-defs";
+import { useGuardarRegistro } from "@/lib/mutations";
 
 export const Route = createFileRoute("/aplicaciones")({
   head: () => ({
@@ -30,6 +34,13 @@ const etiquetaModelo: Record<string, string> = {
 };
 
 function AplicacionesPage() {
+  const [editando, setEditando] = useState<Aplicacion | null>(null);
+  const [formAbierto, setFormAbierto] = useState(false);
+  const guardar = useGuardarRegistro("aplicaciones", "aplicaciones", "Aplicación");
+  const abrirForm = (a: Aplicacion | null) => {
+    setEditando(a);
+    setFormAbierto(true);
+  };
   const aplicaciones = useAplicaciones();
   const suscripciones = useSuscripciones();
   return (
@@ -38,7 +49,7 @@ function AplicacionesPage() {
         titulo="Aplicaciones"
         descripcion="Catálogo de aplicaciones SaaS disponibles para contratación por parte de los clientes."
         acciones={
-          <Button>
+          <Button onClick={() => abrirForm(null)}>
             <Plus className="size-4" /> Nueva aplicación
           </Button>
         }
@@ -104,12 +115,31 @@ function AplicacionesPage() {
                 <Button variant="ghost" size="sm">
                   <Code2 className="size-3.5" /> API
                 </Button>
+                <Button variant="ghost" size="sm" onClick={() => abrirForm(a)}>
+                  <Pencil className="size-3.5" /> Editar
+                </Button>
                 <span className="ml-auto text-xs text-muted-foreground">{contratos} suscripción(es)</span>
               </div>
             </article>
           );
         })}
       </div>
+
+      <RecordFormDialog
+        open={formAbierto}
+        onOpenChange={setFormAbierto}
+        titulo={editando ? `Editar ${editando.nombre}` : "Nueva aplicación"}
+        descripcion="Ficha de catálogo: versión, modelo de cobro, precios y límites incluidos."
+        campos={camposAplicacion}
+        valoresIniciales={filaAplicacion(editando)}
+        guardando={guardar.isPending}
+        onSubmit={(valores) =>
+          guardar.mutate(
+            { ...(editando ? { id: editando.id } : {}), valores },
+            { onSuccess: () => setFormAbierto(false) },
+          )
+        }
+      />
     </>
   );
 }

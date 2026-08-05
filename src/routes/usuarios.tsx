@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus, ShieldCheck, ShieldOff, Users } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -9,6 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { type Usuario } from "@/lib/mock-data";
 import { useCatalogo, useUsuarios } from "@/lib/db";
+import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
+import { camposUsuario, filaUsuario } from "@/lib/form-defs";
+import { useGuardarRegistro } from "@/lib/mutations";
 
 export const Route = createFileRoute("/usuarios")({
   head: () => ({
@@ -27,7 +31,14 @@ export const Route = createFileRoute("/usuarios")({
 
 function UsuariosPage() {
   const usuarios = useUsuarios();
-  const { getAplicacion, getCliente } = useCatalogo();
+  const { getAplicacion, getCliente, clientes } = useCatalogo();
+  const [editando, setEditando] = useState<Usuario | null>(null);
+  const [formAbierto, setFormAbierto] = useState(false);
+  const guardar = useGuardarRegistro("usuarios", "usuarios", "Usuario");
+  const abrirForm = (u: Usuario | null) => {
+    setEditando(u);
+    setFormAbierto(true);
+  };
   const columnas: Columna<Usuario>[] = [
     {
       key: "usuario",
@@ -98,7 +109,15 @@ function UsuariosPage() {
     {
       key: "activo",
       header: "Activar",
-      render: (u) => <Switch defaultChecked={u.estado === "activo"} aria-label={`Activar ${u.email}`} />,
+      render: (u) => (
+        <Switch
+          checked={u.estado === "activo"}
+          aria-label={`Activar ${u.email}`}
+          onCheckedChange={(v) =>
+            guardar.mutate({ id: u.id, valores: { estado: v ? "activo" : "inactivo" } })
+          }
+        />
+      ),
     },
   ];
 
@@ -108,7 +127,7 @@ function UsuariosPage() {
         titulo="Usuarios"
         descripcion="Usuarios internos y de empresas cliente, con roles, MFA e historial de accesos."
         acciones={
-          <Button>
+          <Button onClick={() => abrirForm(null)}>
             <Plus className="size-4" /> Nuevo usuario
           </Button>
         }
@@ -125,6 +144,7 @@ function UsuariosPage() {
         data={usuarios}
         columnas={columnas}
         porPagina={10}
+        onRowClick={abrirForm}
         buscar={(u) => `${u.nombre} ${u.apellidos} ${u.email} ${u.cargo} ${u.rol}`}
         filtros={[
           { label: "Estado", opciones: ["activo", "inactivo", "bloqueado"], match: (u, v) => u.estado === v },
@@ -141,6 +161,22 @@ function UsuariosPage() {
             match: (u, v) => u.rol === v,
           },
         ]}
+      />
+
+      <RecordFormDialog
+        open={formAbierto}
+        onOpenChange={setFormAbierto}
+        titulo={editando ? `Editar ${editando.nombre} ${editando.apellidos}` : "Nuevo usuario"}
+        descripcion="Datos del usuario, empresa asociada, rol RBAC y seguridad."
+        campos={camposUsuario(clientes)}
+        valoresIniciales={filaUsuario(editando)}
+        guardando={guardar.isPending}
+        onSubmit={(valores) =>
+          guardar.mutate(
+            { ...(editando ? { id: editando.id } : {}), valores },
+            { onSuccess: () => setFormAbierto(false) },
+          )
+        }
       />
     </>
   );
