@@ -147,9 +147,9 @@ export function RecordFormDialog({
                       {c.tipo === "multiselect" ? (
                         <div className="grid gap-2 rounded-lg border border-border p-3 sm:grid-cols-2">
                           {(c.opciones ?? []).map((o) => {
-                            const lista = (Array.isArray(valores[c.name]) ? valores[c.name] : []).map(
-                              String,
-                            );
+                            const lista: string[] = (
+                              Array.isArray(valores[c.name]) ? valores[c.name] : []
+                            ).map((x: unknown) => String(x));
                             const marcado = lista.includes(o.value);
                             return (
                               <label
