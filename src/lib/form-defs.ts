@@ -22,6 +22,25 @@ export const camposCliente: Campo[] = [
   { name: "estado", label: "Estado", tipo: "select", opciones: op("prospecto", "prueba", "activo", "impago", "baja") },
   { name: "fecha_alta", label: "Fecha de alta", tipo: "fecha" },
   { name: "observaciones", label: "Observaciones", tipo: "textarea" },
+
+  { name: "iban", label: "IBAN", seccion: "Datos bancarios", placeholder: "ES00 0000 0000 0000 0000 0000" },
+  { name: "banco", label: "Entidad bancaria" },
+  { name: "titular_cuenta", label: "Titular de la cuenta" },
+  { name: "bic", label: "BIC / SWIFT" },
+  { name: "forma_pago", label: "Forma de pago", tipo: "select", opciones: op("domiciliacion", "transferencia", "tarjeta", "pagare", "confirming") },
+  { name: "mandato_sepa", label: "Mandato SEPA" },
+  { name: "fecha_mandato", label: "Fecha del mandato", tipo: "fecha" },
+
+  { name: "moneda", label: "Moneda", tipo: "select", seccion: "Condiciones comerciales", opciones: op("EUR", "USD", "GBP") },
+  { name: "tarifa", label: "Tarifa aplicada", tipo: "select", opciones: op("estandar", "preferente", "partner", "personalizada") },
+  { name: "descuento_general", label: "Descuento general (%)", tipo: "numero" },
+  { name: "periodo_facturacion", label: "Periodo de facturación", tipo: "select", opciones: op("mensual", "trimestral", "semestral", "anual") },
+  { name: "dia_pago", label: "Día de pago", tipo: "numero" },
+  { name: "dias_vencimiento", label: "Días de vencimiento", tipo: "numero" },
+  { name: "limite_credito", label: "Límite de crédito (€)", tipo: "numero" },
+  { name: "iva", label: "IVA (%)", tipo: "numero" },
+  { name: "retencion", label: "Retención IRPF (%)", tipo: "numero" },
+  { name: "condiciones_notas", label: "Notas de condiciones", tipo: "textarea" },
 ];
 
 export const filaCliente = (c?: Cliente | null) => ({
@@ -41,6 +60,23 @@ export const filaCliente = (c?: Cliente | null) => ({
   estado: c?.estado ?? "prospecto",
   fecha_alta: c?.fechaAlta ?? new Date().toISOString().slice(0, 10),
   observaciones: c?.observaciones ?? "",
+  iban: c?.iban ?? "",
+  banco: c?.banco ?? "",
+  titular_cuenta: c?.titularCuenta ?? "",
+  bic: c?.bic ?? "",
+  forma_pago: c?.formaPago ?? "domiciliacion",
+  mandato_sepa: c?.mandatoSepa ?? "",
+  fecha_mandato: c?.fechaMandato ?? "",
+  moneda: c?.moneda ?? "EUR",
+  tarifa: c?.tarifa ?? "estandar",
+  descuento_general: c?.descuentoGeneral ?? 0,
+  periodo_facturacion: c?.periodoFacturacion ?? "mensual",
+  dia_pago: c?.diaPago ?? 1,
+  dias_vencimiento: c?.diasVencimiento ?? 30,
+  limite_credito: c?.limiteCredito ?? 0,
+  iva: c?.iva ?? 21,
+  retencion: c?.retencion ?? 0,
+  condiciones_notas: c?.condicionesNotas ?? "",
 });
 
 /* --------------------------- Aplicaciones ----------------------------- */
@@ -134,7 +170,11 @@ export const filaSuscripcion = (s?: Suscripcion | null) => ({
 
 /* ------------------------------ Usuarios ------------------------------ */
 
-export function camposUsuario(clientes: { id: number; nombreComercial: string }[]): Campo[] {
+export function camposUsuario(
+  clientes: { id: number; nombreComercial: string }[],
+  aplicaciones: { id: number; nombre: string }[] = [],
+  roles: { nombre: string }[] = [],
+): Campo[] {
   return [
     { name: "nombre", label: "Nombre", requerido: true },
     { name: "apellidos", label: "Apellidos" },
@@ -156,19 +196,30 @@ export function camposUsuario(clientes: { id: number; nombreComercial: string }[
       name: "rol",
       label: "Rol",
       tipo: "select",
-      opciones: [
-        "Administrador General",
-        "Administrador Comercial",
-        "Administrador Financiero",
-        "Soporte",
-        "Cliente Administrador",
-        "Usuario Cliente",
-      ].map((r) => ({ value: r, label: r })),
+      opciones: (roles.length
+        ? roles.map((r) => r.nombre)
+        : [
+            "Administrador General",
+            "Administrador Comercial",
+            "Administrador Financiero",
+            "Soporte",
+            "Cliente Administrador",
+            "Usuario Cliente",
+          ]
+      ).map((r) => ({ value: r, label: r })),
     },
     { name: "estado", label: "Estado", tipo: "select", opciones: op("activo", "inactivo", "bloqueado") },
     { name: "idioma", label: "Idioma", tipo: "select", opciones: op("es-ES", "en-GB", "pt-PT") },
     { name: "zona_horaria", label: "Zona horaria" },
     { name: "mfa", label: "MFA activo", tipo: "switch" },
+    {
+      name: "aplicaciones",
+      label: "Aplicaciones autorizadas",
+      tipo: "multiselect",
+      numerico: true,
+      seccion: "Accesos a aplicaciones",
+      opciones: aplicaciones.map((a) => ({ value: String(a.id), label: a.nombre })),
+    },
   ];
 }
 
@@ -185,6 +236,7 @@ export const filaUsuario = (u?: Usuario | null) => ({
   idioma: u?.idioma ?? "es-ES",
   zona_horaria: u?.zonaHoraria ?? "Europe/Madrid",
   mfa: u?.mfa ?? false,
+  aplicaciones: u?.aplicaciones ?? [],
 });
 
 /* --------------------------- Notificaciones --------------------------- */
