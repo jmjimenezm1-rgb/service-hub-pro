@@ -77,11 +77,55 @@ export type Database = {
         }
         Relationships: []
       }
+      cliente_historial: {
+        Row: {
+          autor: string
+          cliente_id: number
+          created_at: string
+          detalle: string
+          id: number
+          tipo: string
+          titulo: string
+        }
+        Insert: {
+          autor?: string
+          cliente_id: number
+          created_at?: string
+          detalle?: string
+          id?: number
+          tipo?: string
+          titulo: string
+        }
+        Update: {
+          autor?: string
+          cliente_id?: number
+          created_at?: string
+          detalle?: string
+          id?: number
+          tipo?: string
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cliente_historial_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clientes: {
         Row: {
+          banco: string
+          bic: string
+          condiciones_notas: string
           contacto: string
           created_at: string
           deleted_at: string | null
+          descuento_general: number
+          dia_pago: number
+          dias_vencimiento: number
           direccion: string
           documentos: number
           email: string
@@ -90,23 +134,40 @@ export type Database = {
           etiquetas: string[]
           fecha_alta: string
           fecha_baja: string | null
+          fecha_mandato: string | null
+          forma_pago: string
+          iban: string
           id: number
+          iva: number
+          limite_credito: number
+          mandato_sepa: string
+          moneda: string
           mrr: number
           nif: string
           nombre_comercial: string
           observaciones: string
           pais: string
+          periodo_facturacion: string
           provincia: string
           razon_social: string
+          retencion: number
           sector: string
+          tarifa: string
           telefono: string
+          titular_cuenta: string
           updated_at: string
           web: string
         }
         Insert: {
+          banco?: string
+          bic?: string
+          condiciones_notas?: string
           contacto?: string
           created_at?: string
           deleted_at?: string | null
+          descuento_general?: number
+          dia_pago?: number
+          dias_vencimiento?: number
           direccion?: string
           documentos?: number
           email?: string
@@ -115,23 +176,40 @@ export type Database = {
           etiquetas?: string[]
           fecha_alta?: string
           fecha_baja?: string | null
+          fecha_mandato?: string | null
+          forma_pago?: string
+          iban?: string
           id?: number
+          iva?: number
+          limite_credito?: number
+          mandato_sepa?: string
+          moneda?: string
           mrr?: number
           nif: string
           nombre_comercial: string
           observaciones?: string
           pais?: string
+          periodo_facturacion?: string
           provincia?: string
           razon_social: string
+          retencion?: number
           sector?: string
+          tarifa?: string
           telefono?: string
+          titular_cuenta?: string
           updated_at?: string
           web?: string
         }
         Update: {
+          banco?: string
+          bic?: string
+          condiciones_notas?: string
           contacto?: string
           created_at?: string
           deleted_at?: string | null
+          descuento_general?: number
+          dia_pago?: number
+          dias_vencimiento?: number
           direccion?: string
           documentos?: number
           email?: string
@@ -140,16 +218,27 @@ export type Database = {
           etiquetas?: string[]
           fecha_alta?: string
           fecha_baja?: string | null
+          fecha_mandato?: string | null
+          forma_pago?: string
+          iban?: string
           id?: number
+          iva?: number
+          limite_credito?: number
+          mandato_sepa?: string
+          moneda?: string
           mrr?: number
           nif?: string
           nombre_comercial?: string
           observaciones?: string
           pais?: string
+          periodo_facturacion?: string
           provincia?: string
           razon_social?: string
+          retencion?: number
           sector?: string
+          tarifa?: string
           telefono?: string
+          titular_cuenta?: string
           updated_at?: string
           web?: string
         }
@@ -271,6 +360,65 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      rol_permisos: {
+        Row: {
+          created_at: string
+          id: number
+          modulo: string
+          nivel: string
+          rol_id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          modulo: string
+          nivel?: string
+          rol_id: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          modulo?: string
+          nivel?: string
+          rol_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rol_permisos_rol_id_fkey"
+            columns: ["rol_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roles: {
+        Row: {
+          created_at: string
+          descripcion: string
+          id: number
+          nombre: string
+          sistema: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descripcion?: string
+          id?: number
+          nombre: string
+          sistema?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descripcion?: string
+          id?: number
+          nombre?: string
+          sistema?: boolean
+          updated_at?: string
+        }
+        Relationships: []
       }
       suscripciones: {
         Row: {
