@@ -9,7 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { eur, fecha, type Cliente } from "@/lib/mock-data";
-import { useClientes, useSuscripciones, useUsuarios } from "@/lib/db";
+import { useClientes, useHistorial, useSuscripciones, useUsuarios } from "@/lib/db";
+import { Input } from "@/components/ui/input";
+import { Landmark, Receipt } from "lucide-react";
 import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
 import { camposCliente, filaCliente } from "@/lib/form-defs";
 import { useEliminarRegistro, useGuardarRegistro } from "@/lib/mutations";
@@ -35,6 +37,9 @@ function CrmPage() {
   const [formAbierto, setFormAbierto] = useState(false);
   const guardar = useGuardarRegistro("clientes", "clientes", "Cliente");
   const eliminar = useEliminarRegistro("clientes", "clientes", "Cliente");
+  const registrar = useGuardarRegistro("cliente_historial", "cliente_historial", "Registro");
+  const historial = useHistorial();
+  const [nota, setNota] = useState("");
 
   const abrirForm = (c: Cliente | null) => {
     setEditando(c);
@@ -93,6 +98,9 @@ function CrmPage() {
         data={clientes}
         columnas={columnas}
         onRowClick={setSeleccionado}
+        checks={[
+          { label: "No mostrar clientes dados de baja", mostrar: (c) => c.estado !== "baja" },
+        ]}
         buscar={(c) => `${c.nombreComercial} ${c.razonSocial} ${c.nif} ${c.email} ${c.sector} ${c.provincia}`}
         filtros={[
           {
@@ -119,7 +127,21 @@ function CrmPage() {
         onSubmit={(valores) =>
           guardar.mutate(
             { ...(editando ? { id: editando.id } : {}), valores },
-            { onSuccess: () => setFormAbierto(false) },
+            {
+              onSuccess: () => {
+                setFormAbierto(false);
+                if (editando) {
+                  registrar.mutate({
+                    valores: {
+                      cliente_id: editando.id,
+                      tipo: "actualizacion",
+                      titulo: "Ficha del cliente actualizada",
+                      detalle: "Datos generales, bancarios o condiciones comerciales.",
+                    },
+                  });
+                }
+              },
+            },
           )
         }
       />
@@ -148,6 +170,14 @@ function CrmPage() {
                     variant="outline"
                     onClick={() => {
                       eliminar.mutate(seleccionado.id);
+                      registrar.mutate({
+                        valores: {
+                          cliente_id: seleccionado.id,
+                          tipo: "baja",
+                          titulo: "Cliente dado de baja",
+                          detalle: "Baja registrada desde la ficha de CRM.",
+                        },
+                      });
                       setSeleccionado(null);
                     }}
                   >
@@ -210,11 +240,87 @@ function CrmPage() {
 
                 <div>
                   <h3 className="flex items-center gap-2 text-sm font-semibold">
+                    <Landmark className="size-4 text-muted-foreground" /> Datos bancarios
+                  </h3>
+                  <dl className="mt-2 grid grid-cols-2 gap-3 text-sm">
+                    <Dato k="IBAN" v={seleccionado.iban || "—"} />
+                    <Dato k="Entidad" v={seleccionado.banco || "—"} />
+                    <Dato k="Titular" v={seleccionado.titularCuenta || "—"} />
+                    <Dato k="BIC/SWIFT" v={seleccionado.bic || "—"} />
+                    <Dato k="Forma de pago" v={seleccionado.formaPago || "—"} />
+                    <Dato k="Mandato SEPA" v={seleccionado.mandatoSepa || "—"} />
+                    <Dato k="Fecha mandato" v={seleccionado.fechaMandato ? fecha(seleccionado.fechaMandato) : "—"} />
+                  </dl>
+                </div>
+
+                <div>
+                  <h3 className="flex items-center gap-2 text-sm font-semibold">
+                    <Receipt className="size-4 text-muted-foreground" /> Condiciones comerciales
+                  </h3>
+                  <dl className="mt-2 grid grid-cols-2 gap-3 text-sm">
+                    <Dato k="Tarifa" v={seleccionado.tarifa ?? "—"} />
+                    <Dato k="Moneda" v={seleccionado.moneda ?? "—"} />
+                    <Dato k="Descuento general" v={`${seleccionado.descuentoGeneral ?? 0}%`} />
+                    <Dato k="Facturación" v={seleccionado.periodoFacturacion ?? "—"} />
+                    <Dato k="Día de pago" v={String(seleccionado.diaPago ?? "—")} />
+                    <Dato k="Vencimiento" v={`${seleccionado.diasVencimiento ?? 0} días`} />
+                    <Dato k="Límite de crédito" v={eur(seleccionado.limiteCredito ?? 0)} />
+                    <Dato k="IVA / IRPF" v={`${seleccionado.iva ?? 0}% / ${seleccionado.retencion ?? 0}%`} />
+                  </dl>
+                  {seleccionado.condicionesNotas ? (
+                    <p className="mt-2 text-sm text-muted-foreground">{seleccionado.condicionesNotas}</p>
+                  ) : null}
+                </div>
+
+                <div>
+                  <h3 className="flex items-center gap-2 text-sm font-semibold">
                     <History className="size-4 text-muted-foreground" /> Historial de actividad
                   </h3>
-                  <ol className="mt-2 space-y-3 border-l border-border pl-4 text-sm">
-                    <li><p>Actualización de datos fiscales</p><p className="text-xs text-muted-foreground">{fecha(seleccionado.updated_at)} · {seleccionado.updated_by}</p></li>
-                    <li><p>Alta del cliente en la plataforma</p><p className="text-xs text-muted-foreground">{fecha(seleccionado.fechaAlta)} · {seleccionado.created_by}</p></li>
+                  <form
+                    className="mt-2 flex gap-2"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!nota.trim()) return;
+                      registrar.mutate(
+                        {
+                          valores: {
+                            cliente_id: seleccionado.id,
+                            tipo: "nota",
+                            titulo: nota.trim(),
+                            detalle: "",
+                          },
+                        },
+                        { onSuccess: () => setNota("") },
+                      );
+                    }}
+                  >
+                    <Input
+                      value={nota}
+                      onChange={(e) => setNota(e.target.value)}
+                      placeholder="Añadir anotación al historial…"
+                    />
+                    <Button type="submit" size="sm" disabled={registrar.isPending}>
+                      Añadir
+                    </Button>
+                  </form>
+                  <ol className="mt-3 space-y-3 border-l border-border pl-4 text-sm">
+                    {historial
+                      .filter((h) => h.clienteId === seleccionado.id)
+                      .map((h) => (
+                        <li key={h.id}>
+                          <p>{h.titulo}</p>
+                          {h.detalle && <p className="text-xs text-muted-foreground">{h.detalle}</p>}
+                          <p className="text-xs text-muted-foreground">
+                            {fecha(h.created_at)} · {h.tipo} · {h.autor}
+                          </p>
+                        </li>
+                      ))}
+                    <li>
+                      <p>Alta del cliente en la plataforma</p>
+                      <p className="text-xs text-muted-foreground">
+                        {fecha(seleccionado.fechaAlta)} · {seleccionado.created_by}
+                      </p>
+                    </li>
                   </ol>
                 </div>
 
