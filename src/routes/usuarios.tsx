@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { type Usuario } from "@/lib/mock-data";
-import { useCatalogo, useUsuarios } from "@/lib/db";
+import { useCatalogo, useRoles, useUsuarios } from "@/lib/db";
 import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
 import { camposUsuario, filaUsuario } from "@/lib/form-defs";
 import { useGuardarRegistro } from "@/lib/mutations";
@@ -31,7 +31,8 @@ export const Route = createFileRoute("/usuarios")({
 
 function UsuariosPage() {
   const usuarios = useUsuarios();
-  const { getAplicacion, getCliente, clientes } = useCatalogo();
+  const { getAplicacion, getCliente, clientes, aplicaciones } = useCatalogo();
+  const roles = useRoles();
   const [editando, setEditando] = useState<Usuario | null>(null);
   const [formAbierto, setFormAbierto] = useState(false);
   const guardar = useGuardarRegistro("usuarios", "usuarios", "Usuario");
@@ -146,18 +147,26 @@ function UsuariosPage() {
         porPagina={10}
         onRowClick={abrirForm}
         buscar={(u) => `${u.nombre} ${u.apellidos} ${u.email} ${u.cargo} ${u.rol}`}
+        checks={[
+          {
+            label: "No mostrar usuarios de clientes dados de baja",
+            mostrar: (u) => !u.clienteId || getCliente(u.clienteId)?.estado !== "baja",
+          },
+        ]}
         filtros={[
           { label: "Estado", opciones: ["activo", "inactivo", "bloqueado"], match: (u, v) => u.estado === v },
           {
             label: "Rol",
-            opciones: [
-              "Administrador General",
-              "Administrador Comercial",
-              "Administrador Financiero",
-              "Soporte",
-              "Cliente Administrador",
-              "Usuario Cliente",
-            ],
+            opciones: roles.length
+              ? roles.map((r) => r.nombre)
+              : [
+                  "Administrador General",
+                  "Administrador Comercial",
+                  "Administrador Financiero",
+                  "Soporte",
+                  "Cliente Administrador",
+                  "Usuario Cliente",
+                ],
             match: (u, v) => u.rol === v,
           },
         ]}
@@ -167,8 +176,8 @@ function UsuariosPage() {
         open={formAbierto}
         onOpenChange={setFormAbierto}
         titulo={editando ? `Editar ${editando.nombre} ${editando.apellidos}` : "Nuevo usuario"}
-        descripcion="Datos del usuario, empresa asociada, rol RBAC y seguridad."
-        campos={camposUsuario(clientes)}
+        descripcion="Datos del usuario, empresa asociada, rol RBAC, seguridad y aplicaciones autorizadas."
+        campos={camposUsuario(clientes, aplicaciones, roles)}
         valoresIniciales={filaUsuario(editando)}
         guardando={guardar.isPending}
         onSubmit={(valores) =>

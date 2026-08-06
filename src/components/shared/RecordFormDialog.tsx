@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -24,16 +25,27 @@ import {
 export type Campo = {
   name: string;
   label: string;
-  tipo?: "texto" | "numero" | "fecha" | "email" | "textarea" | "select" | "switch";
+  tipo?:
+    | "texto"
+    | "numero"
+    | "fecha"
+    | "email"
+    | "textarea"
+    | "select"
+    | "switch"
+    | "multiselect";
   opciones?: { value: string; label: string }[];
   requerido?: boolean;
   numerico?: boolean;
   ancho?: "full";
   placeholder?: string;
+  /** Agrupa campos bajo un encabezado dentro del formulario. */
+  seccion?: string;
 };
 
 /**
  * Formulario genérico de alta/edición reutilizado por todos los módulos.
+ * Soporta secciones, selects numéricos y selección múltiple (arrays).
  */
 export function RecordFormDialog({
   open,
@@ -71,18 +83,24 @@ export function RecordFormDialog({
     for (const c of campos) {
       const v = valores[c.name];
       limpio[c.name] =
-        c.tipo === "select" && c.numerico
-          ? (v === "" || v == null ? null : Number(v))
-          : c.tipo === "numero"
-          ? Number(v ?? 0)
-          : c.tipo === "switch"
-            ? !!v
-            : c.tipo === "fecha"
-              ? (v || null)
-              : (v ?? "");
+        c.tipo === "multiselect"
+          ? (Array.isArray(v) ? v : []).map((x) => (c.numerico ? Number(x) : x))
+          : c.tipo === "select" && c.numerico
+            ? v === "" || v == null
+              ? null
+              : Number(v)
+            : c.tipo === "numero"
+              ? Number(v ?? 0)
+              : c.tipo === "switch"
+                ? !!v
+                : c.tipo === "fecha"
+                  ? v || null
+                  : (v ?? "");
     }
     onSubmit(limpio);
   };
+
+  let seccionActual: string | undefined;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -93,57 +111,125 @@ export function RecordFormDialog({
         </DialogHeader>
         <form onSubmit={enviar} className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
-            {campos.map((c) => (
-              <div
-                key={c.name}
-                className={c.ancho === "full" || c.tipo === "textarea" ? "sm:col-span-2" : undefined}
-              >
-                <Label htmlFor={c.name} className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {c.label}
-                </Label>
-                <div className="mt-1.5">
-                  {c.tipo === "select" ? (
-                    <Select value={String(valores[c.name] ?? "")} onValueChange={(v) => set(c.name, v)}>
-                      <SelectTrigger id={c.name}>
-                        <SelectValue placeholder={c.placeholder ?? "Selecciona…"} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {(c.opciones ?? []).map((o) => (
-                          <SelectItem key={o.value} value={o.value}>
-                            {o.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : c.tipo === "textarea" ? (
-                    <Textarea
-                      id={c.name}
-                      value={valores[c.name] ?? ""}
-                      onChange={(e) => set(c.name, e.target.value)}
-                      rows={3}
-                    />
-                  ) : c.tipo === "switch" ? (
-                    <div className="flex h-9 items-center">
-                      <Switch
-                        id={c.name}
-                        checked={!!valores[c.name]}
-                        onCheckedChange={(v) => set(c.name, v)}
-                      />
-                    </div>
-                  ) : (
-                    <Input
-                      id={c.name}
-                      type={c.tipo === "numero" ? "number" : c.tipo === "fecha" ? "date" : c.tipo === "email" ? "email" : "text"}
-                      step={c.tipo === "numero" ? "any" : undefined}
-                      required={c.requerido}
-                      placeholder={c.placeholder ?? ""}
-                      value={valores[c.name] ?? ""}
-                      onChange={(e) => set(c.name, e.target.value)}
-                    />
+            {campos.map((c) => {
+              const nuevaSeccion = c.seccion && c.seccion !== seccionActual ? c.seccion : null;
+              if (c.seccion) seccionActual = c.seccion;
+              return (
+                <div
+                  key={c.name}
+                  className={
+                    c.ancho === "full" || c.tipo === "textarea" || c.tipo === "multiselect"
+                      ? "sm:col-span-2"
+                      : undefined
+                  }
+                  style={nuevaSeccion ? { gridColumn: "1 / -1" } : undefined}
+                >
+                  {nuevaSeccion && (
+                    <h4 className="mb-3 border-b border-border pb-1.5 text-sm font-semibold">
+                      {nuevaSeccion}
+                    </h4>
                   )}
+                  <div
+                    className={
+                      nuevaSeccion &&
+                      !(c.ancho === "full" || c.tipo === "textarea" || c.tipo === "multiselect")
+                        ? "sm:max-w-[calc(50%-0.5rem)]"
+                        : undefined
+                    }
+                  >
+                    <Label
+                      htmlFor={c.name}
+                      className="text-xs uppercase tracking-wide text-muted-foreground"
+                    >
+                      {c.label}
+                    </Label>
+                    <div className="mt-1.5">
+                      {c.tipo === "multiselect" ? (
+                        <div className="grid gap-2 rounded-lg border border-border p-3 sm:grid-cols-2">
+                          {(c.opciones ?? []).map((o) => {
+                            const lista: string[] = (
+                              Array.isArray(valores[c.name]) ? valores[c.name] : []
+                            ).map((x: unknown) => String(x));
+                            const marcado = lista.includes(o.value);
+                            return (
+                              <label
+                                key={o.value}
+                                className="flex cursor-pointer items-center gap-2 text-sm"
+                              >
+                                <Checkbox
+                                  checked={marcado}
+                                  onCheckedChange={(v) =>
+                                    set(
+                                      c.name,
+                                      v
+                                        ? [...lista, o.value]
+                                        : lista.filter((x) => x !== o.value),
+                                    )
+                                  }
+                                />
+                                {o.label}
+                              </label>
+                            );
+                          })}
+                          {(c.opciones ?? []).length === 0 && (
+                            <p className="text-sm text-muted-foreground">Sin opciones disponibles.</p>
+                          )}
+                        </div>
+                      ) : c.tipo === "select" ? (
+                        <Select
+                          value={String(valores[c.name] ?? "")}
+                          onValueChange={(v) => set(c.name, v)}
+                        >
+                          <SelectTrigger id={c.name}>
+                            <SelectValue placeholder={c.placeholder ?? "Selecciona…"} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {(c.opciones ?? []).map((o) => (
+                              <SelectItem key={o.value} value={o.value}>
+                                {o.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : c.tipo === "textarea" ? (
+                        <Textarea
+                          id={c.name}
+                          value={valores[c.name] ?? ""}
+                          onChange={(e) => set(c.name, e.target.value)}
+                          rows={3}
+                        />
+                      ) : c.tipo === "switch" ? (
+                        <div className="flex h-9 items-center">
+                          <Switch
+                            id={c.name}
+                            checked={!!valores[c.name]}
+                            onCheckedChange={(v) => set(c.name, v)}
+                          />
+                        </div>
+                      ) : (
+                        <Input
+                          id={c.name}
+                          type={
+                            c.tipo === "numero"
+                              ? "number"
+                              : c.tipo === "fecha"
+                                ? "date"
+                                : c.tipo === "email"
+                                  ? "email"
+                                  : "text"
+                          }
+                          step={c.tipo === "numero" ? "any" : undefined}
+                          required={c.requerido}
+                          placeholder={c.placeholder ?? ""}
+                          value={valores[c.name] ?? ""}
+                          onChange={(e) => set(c.name, e.target.value)}
+                        />
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           {extra}
           <DialogFooter>

@@ -1,6 +1,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { Search, ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -32,6 +33,14 @@ export interface FiltroDef<T> {
   match: (row: T, valor: string) => boolean;
 }
 
+/** Filtro de casilla, marcado por defecto salvo que se indique lo contrario. */
+export interface CheckDef<T> {
+  label: string;
+  /** Devuelve true si la fila debe mostrarse cuando la casilla está marcada. */
+  mostrar: (row: T) => boolean;
+  porDefecto?: boolean;
+}
+
 /**
  * Tabla reutilizable por todos los módulos: búsqueda, filtros y paginación.
  */
@@ -40,6 +49,7 @@ export function DataTable<T extends { id: number }>({
   columnas,
   buscar,
   filtros = [],
+  checks = [],
   onRowClick,
   porPagina = 8,
   vacio = "Sin resultados",
@@ -48,6 +58,7 @@ export function DataTable<T extends { id: number }>({
   columnas: Columna<T>[];
   buscar: (row: T) => string;
   filtros?: FiltroDef<T>[];
+  checks?: CheckDef<T>[];
   onRowClick?: (row: T) => void;
   porPagina?: number;
   vacio?: string;
@@ -55,17 +66,24 @@ export function DataTable<T extends { id: number }>({
   const [q, setQ] = useState("");
   const [valores, setValores] = useState<Record<string, string>>({});
   const [pagina, setPagina] = useState(1);
+  const [marcados, setMarcados] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(checks.map((c) => [c.label, c.porDefecto !== false])),
+  );
 
   const filtrados = useMemo(() => {
     const term = q.trim().toLowerCase();
     return data.filter((row) => {
       if (term && !buscar(row).toLowerCase().includes(term)) return false;
+      for (const c of checks) {
+        if ((marcados[c.label] ?? c.porDefecto !== false) && !c.mostrar(row)) return false;
+      }
       return filtros.every((f) => {
         const v = valores[f.label];
         return !v || v === "todos" || f.match(row, v);
       });
     });
-  }, [data, q, valores, filtros, buscar]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, q, valores, marcados, filtros, checks, buscar]);
 
   const totalPaginas = Math.max(1, Math.ceil(filtrados.length / porPagina));
   const pageActual = Math.min(pagina, totalPaginas);
@@ -114,6 +132,23 @@ export function DataTable<T extends { id: number }>({
           </div>
         )}
       </div>
+
+      {checks.length > 0 && (
+        <div className="flex flex-wrap gap-x-5 gap-y-2 border-b border-border px-3 py-2.5">
+          {checks.map((c) => (
+            <label key={c.label} className="flex cursor-pointer items-center gap-2 text-sm">
+              <Checkbox
+                checked={marcados[c.label] ?? c.porDefecto !== false}
+                onCheckedChange={(v) => {
+                  setMarcados((prev) => ({ ...prev, [c.label]: !!v }));
+                  setPagina(1);
+                }}
+              />
+              {c.label}
+            </label>
+          ))}
+        </div>
+      )}
 
       <div className="overflow-x-auto">
         <Table>

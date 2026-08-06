@@ -50,6 +50,25 @@ export interface Cliente extends BaseEntity {
   etiquetas: string[];
   documentos: number;
   mrr: number;
+  /* Datos bancarios */
+  iban?: string;
+  banco?: string;
+  titularCuenta?: string;
+  bic?: string;
+  formaPago?: string;
+  mandatoSepa?: string;
+  fechaMandato?: string | null;
+  /* Condiciones comerciales */
+  moneda?: string;
+  tarifa?: string;
+  descuentoGeneral?: number;
+  diaPago?: number;
+  diasVencimiento?: number;
+  limiteCredito?: number;
+  periodoFacturacion?: string;
+  iva?: number;
+  retencion?: number;
+  condicionesNotas?: string;
 }
 
 export const clientes: Cliente[] = [

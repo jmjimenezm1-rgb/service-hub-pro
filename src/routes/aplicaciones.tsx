@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { eur, type Aplicacion } from "@/lib/mock-data";
 import { useAplicaciones, useSuscripciones } from "@/lib/db";
 import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
@@ -41,7 +42,9 @@ function AplicacionesPage() {
     setEditando(a);
     setFormAbierto(true);
   };
-  const aplicaciones = useAplicaciones();
+  const todas = useAplicaciones();
+  const [ocultarRetiradas, setOcultarRetiradas] = useState(true);
+  const aplicaciones = ocultarRetiradas ? todas.filter((a) => a.estado !== "retirada") : todas;
   const suscripciones = useSuscripciones();
   return (
     <>
@@ -54,6 +57,14 @@ function AplicacionesPage() {
           </Button>
         }
       />
+
+      <label className="flex w-fit cursor-pointer items-center gap-2 text-sm">
+        <Checkbox
+          checked={ocultarRetiradas}
+          onCheckedChange={(v) => setOcultarRetiradas(!!v)}
+        />
+        No mostrar aplicaciones retiradas
+      </label>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {aplicaciones.map((a) => {
