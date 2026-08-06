@@ -51,6 +51,23 @@ const aCliente = (r: Row): Cliente => ({
   etiquetas: r.etiquetas ?? [],
   documentos: r.documentos,
   mrr: Number(r.mrr),
+  iban: r.iban ?? "",
+  banco: r.banco ?? "",
+  titularCuenta: r.titular_cuenta ?? "",
+  bic: r.bic ?? "",
+  formaPago: r.forma_pago ?? "domiciliacion",
+  mandatoSepa: r.mandato_sepa ?? "",
+  fechaMandato: r.fecha_mandato ?? null,
+  moneda: r.moneda ?? "EUR",
+  tarifa: r.tarifa ?? "estandar",
+  descuentoGeneral: Number(r.descuento_general ?? 0),
+  diaPago: Number(r.dia_pago ?? 1),
+  diasVencimiento: Number(r.dias_vencimiento ?? 30),
+  limiteCredito: Number(r.limite_credito ?? 0),
+  periodoFacturacion: r.periodo_facturacion ?? "mensual",
+  iva: Number(r.iva ?? 21),
+  retencion: Number(r.retencion ?? 0),
+  condicionesNotas: r.condiciones_notas ?? "",
 });
 
 const aAplicacion = (r: Row): Aplicacion => ({
@@ -170,6 +187,74 @@ export const notificacionesQuery = queryOptions({
   queryFn: () => listar("notificaciones", "enviada_en", aNotificacion),
 });
 
+/* ------------------- Roles, permisos e historial ---------------------- */
+
+export interface Rol {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  sistema: boolean;
+}
+
+export interface RolPermiso {
+  id: number;
+  rolId: number;
+  modulo: string;
+  nivel: string;
+}
+
+export interface EntradaHistorial {
+  id: number;
+  clienteId: number;
+  tipo: string;
+  titulo: string;
+  detalle: string;
+  autor: string;
+  created_at: string;
+}
+
+export const rolesQuery = queryOptions({
+  queryKey: ["roles"],
+  queryFn: () =>
+    listar("roles", "id", (r: Row): Rol => ({
+      id: Number(r.id),
+      nombre: r.nombre,
+      descripcion: r.descripcion,
+      sistema: !!r.sistema,
+    })),
+});
+
+export const rolPermisosQuery = queryOptions({
+  queryKey: ["rol_permisos"],
+  queryFn: () =>
+    listar("rol_permisos", "id", (r: Row): RolPermiso => ({
+      id: Number(r.id),
+      rolId: Number(r.rol_id),
+      modulo: r.modulo,
+      nivel: r.nivel,
+    })),
+});
+
+export const historialQuery = queryOptions({
+  queryKey: ["cliente_historial"],
+  queryFn: async (): Promise<EntradaHistorial[]> => {
+    const { data, error } = await supabase
+      .from("cliente_historial")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return (data ?? []).map((r: Row) => ({
+      id: Number(r.id),
+      clienteId: Number(r.cliente_id),
+      tipo: r.tipo,
+      titulo: r.titulo,
+      detalle: r.detalle,
+      autor: r.autor,
+      created_at: r.created_at,
+    }));
+  },
+});
+
 /* ------------------------------- Hooks -------------------------------- */
 
 const vacio: never[] = [];
@@ -180,6 +265,10 @@ export const useSuscripciones = () => useQuery(suscripcionesQuery).data ?? (vaci
 export const useUsuarios = () => useQuery(usuariosQuery).data ?? (vacio as Usuario[]);
 export const useConsumos = () => useQuery(consumosQuery).data ?? (vacio as RegistroConsumo[]);
 export const useNotificaciones = () => useQuery(notificacionesQuery).data ?? (vacio as Notificacion[]);
+
+export const useRoles = () => useQuery(rolesQuery).data ?? (vacio as Rol[]);
+export const useRolPermisos = () => useQuery(rolPermisosQuery).data ?? (vacio as RolPermiso[]);
+export const useHistorial = () => useQuery(historialQuery).data ?? (vacio as EntradaHistorial[]);
 
 /** Catálogo compartido: clientes y aplicaciones con búsqueda por id. */
 export function useCatalogo() {
