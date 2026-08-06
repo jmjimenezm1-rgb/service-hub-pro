@@ -129,6 +129,12 @@ function SuscripcionesPage() {
         buscar={(s) =>
           `${getCliente(s.clienteId)?.nombreComercial} ${getAplicacion(s.aplicacionId)?.nombre} ${s.periodicidad}`
         }
+        checks={[
+          {
+            label: "No mostrar suscripciones de clientes dados de baja",
+            mostrar: (s) => getCliente(s.clienteId)?.estado !== "baja",
+          },
+        ]}
         filtros={[
           { label: "Estado", opciones: ["activa", "prueba", "suspendida", "cancelada"], match: (s, v) => s.estado === v },
           {
