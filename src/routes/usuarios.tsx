@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus, ShieldCheck, ShieldOff, Users } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { FiltroClienteAviso, filtrarPorCliente, useClienteFiltro } from "@/lib/filtro-cliente";
 import { StatCard } from "@/components/shared/StatCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable, type Columna } from "@/components/shared/DataTable";
@@ -30,7 +31,8 @@ export const Route = createFileRoute("/usuarios")({
 });
 
 function UsuariosPage() {
-  const usuarios = useUsuarios();
+  const clienteFiltro = useClienteFiltro();
+  const usuarios = filtrarPorCliente(useUsuarios(), clienteFiltro, (u) => u.clienteId);
   const { getAplicacion, getCliente, clientes, aplicaciones } = useCatalogo();
   const roles = useRoles();
   const [editando, setEditando] = useState<Usuario | null>(null);
@@ -140,6 +142,8 @@ function UsuariosPage() {
         <StatCard label="Con MFA" value={`${Math.round((usuarios.filter((u) => u.mfa).length / usuarios.length) * 100)}%`} icon={ShieldCheck} />
         <StatCard label="Bloqueados / inactivos" value={usuarios.filter((u) => u.estado !== "activo").length} />
       </section>
+
+      <FiltroClienteAviso />
 
       <DataTable
         data={usuarios}

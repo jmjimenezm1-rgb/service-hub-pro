@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Activity, Gauge, AlertTriangle, Download } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { FiltroClienteAviso, filtrarPorCliente, useClienteFiltro } from "@/lib/filtro-cliente";
 import { StatCard } from "@/components/shared/StatCard";
 import { DataTable, type Columna } from "@/components/shared/DataTable";
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,8 @@ export const Route = createFileRoute("/consumo")({
 });
 
 function ConsumoPage() {
-  const consumos = useConsumos();
+  const clienteFiltro = useClienteFiltro();
+  const consumos = filtrarPorCliente(useConsumos(), clienteFiltro, (c) => c.clienteId);
   const { getAplicacion, getCliente } = useCatalogo();
   const costeTotal = consumos.reduce((s, c) => s + c.consumido * c.costeUnitario, 0);
   const excedidos = consumos.filter((c) => c.incluido > 0 && c.consumido > c.incluido);
@@ -98,6 +100,8 @@ function ConsumoPage() {
         <StatCard label="Métricas activas" value={new Set(consumos.map((c) => c.metrica)).size} />
         <StatCard label="Límites excedidos" value={excedidos.length} icon={AlertTriangle} hint="facturables como exceso" />
       </section>
+
+      <FiltroClienteAviso />
 
       <DataTable
         data={consumos}

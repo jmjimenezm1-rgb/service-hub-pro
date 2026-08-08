@@ -281,3 +281,43 @@ export function useCatalogo() {
     getAplicacion: (id: number) => aplicaciones.find((a) => a.id === id),
   };
 }
+
+/* ---------------------------- Agenda CRM ------------------------------ */
+
+export interface EntradaAgenda {
+  id: number;
+  clienteId: number;
+  contacto: string;
+  aplicacionId: number | null;
+  tipo: string;
+  asunto: string;
+  comentarios: string;
+  fechaPlanificada: string;
+  fechaReal: string | null;
+  estado: string;
+  origen: string;
+  referenciaExterna: string;
+  created_at: string;
+}
+
+export const agendaQuery = queryOptions({
+  queryKey: ["agenda_cliente"],
+  queryFn: () =>
+    listar("agenda_cliente", "fecha_planificada", (r: Row): EntradaAgenda => ({
+      id: Number(r.id),
+      clienteId: Number(r.cliente_id),
+      contacto: r.contacto ?? "",
+      aplicacionId: r.aplicacion_id === null ? null : Number(r.aplicacion_id),
+      tipo: r.tipo,
+      asunto: r.asunto,
+      comentarios: r.comentarios ?? "",
+      fechaPlanificada: r.fecha_planificada,
+      fechaReal: r.fecha_real ?? null,
+      estado: r.estado,
+      origen: r.origen ?? "manual",
+      referenciaExterna: r.referencia_externa ?? "",
+      created_at: r.created_at,
+    })),
+});
+
+export const useAgenda = () => useQuery(agendaQuery).data ?? (vacio as EntradaAgenda[]);

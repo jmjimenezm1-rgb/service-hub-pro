@@ -13,11 +13,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AplicacionesRouteImport } from './routes/aplicaciones'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ConsumoRouteImport } from './routes/consumo'
-import { Route as CrmRouteImport } from './routes/crm'
 import { Route as NotificacionesRouteImport } from './routes/notificaciones'
 import { Route as PermisosRouteImport } from './routes/permisos'
 import { Route as SuscripcionesRouteImport } from './routes/suscripciones'
 import { Route as UsuariosRouteImport } from './routes/usuarios'
+import { Route as CrmIndexRouteImport } from './routes/crm.index'
+import { Route as CrmClienteIdRouteImport } from './routes/crm.$clienteId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -37,11 +38,6 @@ const AuthRoute = AuthRouteImport.update({
 const ConsumoRoute = ConsumoRouteImport.update({
   id: '/consumo',
   path: '/consumo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CrmRoute = CrmRouteImport.update({
-  id: '/crm',
-  path: '/crm',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificacionesRoute = NotificacionesRouteImport.update({
@@ -64,28 +60,40 @@ const UsuariosRoute = UsuariosRouteImport.update({
   path: '/usuarios',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CrmIndexRoute = CrmIndexRouteImport.update({
+  id: '/crm/',
+  path: '/crm/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CrmClienteIdRoute = CrmClienteIdRouteImport.update({
+  id: '/crm/$clienteId',
+  path: '/crm/$clienteId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aplicaciones': typeof AplicacionesRoute
   '/auth': typeof AuthRoute
   '/consumo': typeof ConsumoRoute
-  '/crm': typeof CrmRoute
   '/notificaciones': typeof NotificacionesRoute
   '/permisos': typeof PermisosRoute
   '/suscripciones': typeof SuscripcionesRoute
   '/usuarios': typeof UsuariosRoute
+  '/crm/$clienteId': typeof CrmClienteIdRoute
+  '/crm/': typeof CrmIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aplicaciones': typeof AplicacionesRoute
   '/auth': typeof AuthRoute
   '/consumo': typeof ConsumoRoute
-  '/crm': typeof CrmRoute
   '/notificaciones': typeof NotificacionesRoute
   '/permisos': typeof PermisosRoute
   '/suscripciones': typeof SuscripcionesRoute
   '/usuarios': typeof UsuariosRoute
+  '/crm/$clienteId': typeof CrmClienteIdRoute
+  '/crm': typeof CrmIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -93,11 +101,12 @@ export interface FileRoutesById {
   '/aplicaciones': typeof AplicacionesRoute
   '/auth': typeof AuthRoute
   '/consumo': typeof ConsumoRoute
-  '/crm': typeof CrmRoute
   '/notificaciones': typeof NotificacionesRoute
   '/permisos': typeof PermisosRoute
   '/suscripciones': typeof SuscripcionesRoute
   '/usuarios': typeof UsuariosRoute
+  '/crm/$clienteId': typeof CrmClienteIdRoute
+  '/crm/': typeof CrmIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,33 +115,36 @@ export interface FileRouteTypes {
     | '/aplicaciones'
     | '/auth'
     | '/consumo'
-    | '/crm'
     | '/notificaciones'
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
+    | '/crm/$clienteId'
+    | '/crm/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/aplicaciones'
     | '/auth'
     | '/consumo'
-    | '/crm'
     | '/notificaciones'
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
+    | '/crm/$clienteId'
+    | '/crm'
   id:
     | '__root__'
     | '/'
     | '/aplicaciones'
     | '/auth'
     | '/consumo'
-    | '/crm'
     | '/notificaciones'
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
+    | '/crm/$clienteId'
+    | '/crm/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -140,11 +152,12 @@ export interface RootRouteChildren {
   AplicacionesRoute: typeof AplicacionesRoute
   AuthRoute: typeof AuthRoute
   ConsumoRoute: typeof ConsumoRoute
-  CrmRoute: typeof CrmRoute
   NotificacionesRoute: typeof NotificacionesRoute
   PermisosRoute: typeof PermisosRoute
   SuscripcionesRoute: typeof SuscripcionesRoute
   UsuariosRoute: typeof UsuariosRoute
+  CrmClienteIdRoute: typeof CrmClienteIdRoute
+  CrmIndexRoute: typeof CrmIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -177,13 +190,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsumoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/crm': {
-      id: '/crm'
-      path: '/crm'
-      fullPath: '/crm'
-      preLoaderRoute: typeof CrmRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/notificaciones': {
       id: '/notificaciones'
       path: '/notificaciones'
@@ -212,6 +218,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UsuariosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/crm/': {
+      id: '/crm/'
+      path: '/crm'
+      fullPath: '/crm/'
+      preLoaderRoute: typeof CrmIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/crm/$clienteId': {
+      id: '/crm/$clienteId'
+      path: '/crm/$clienteId'
+      fullPath: '/crm/$clienteId'
+      preLoaderRoute: typeof CrmClienteIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -220,11 +240,12 @@ const rootRouteChildren: RootRouteChildren = {
   AplicacionesRoute: AplicacionesRoute,
   AuthRoute: AuthRoute,
   ConsumoRoute: ConsumoRoute,
-  CrmRoute: CrmRoute,
   NotificacionesRoute: NotificacionesRoute,
   PermisosRoute: PermisosRoute,
   SuscripcionesRoute: SuscripcionesRoute,
   UsuariosRoute: UsuariosRoute,
+  CrmClienteIdRoute: CrmClienteIdRoute,
+  CrmIndexRoute: CrmIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
