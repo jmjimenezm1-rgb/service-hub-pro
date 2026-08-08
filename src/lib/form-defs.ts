@@ -262,3 +262,54 @@ export const filaNotificacion = (n?: Notificacion | null) => ({
   estado: n?.estado ?? "pendiente",
   plantilla: n?.plantilla ?? "",
 });
+
+/* ------------------------------ Agenda -------------------------------- */
+
+export const tiposAgenda = ["llamada", "reunion", "email", "whatsapp", "marketing"] as const;
+
+export function camposAgenda(
+  aplicaciones: { id: number; nombre: string }[],
+  contactos: string[],
+): Campo[] {
+  return [
+    { name: "tipo", label: "Tipo de contacto", tipo: "select", opciones: op(...tiposAgenda) },
+    { name: "estado", label: "Estado", tipo: "select", opciones: op("planificado", "realizado", "cancelado") },
+    { name: "asunto", label: "Asunto", requerido: true, ancho: "full" },
+    {
+      name: "contacto",
+      label: "Contacto del cliente",
+      tipo: "select",
+      opciones: [{ value: "", label: "Sin especificar" }, ...contactos.map((c) => ({ value: c, label: c }))].filter(
+        (o) => o.value !== "",
+      ),
+    },
+    {
+      name: "aplicacion_id",
+      label: "Producto / aplicación",
+      tipo: "select",
+      numerico: true,
+      opciones: [
+        { value: "0", label: "Sin aplicación" },
+        ...aplicaciones.map((a) => ({ value: String(a.id), label: a.nombre })),
+      ],
+    },
+    { name: "fecha_planificada", label: "Fecha planificada", tipo: "fecha" },
+    { name: "fecha_real", label: "Fecha real", tipo: "fecha" },
+    { name: "origen", label: "Origen", tipo: "select", opciones: op("manual", "marketing") },
+    { name: "referencia_externa", label: "Referencia de campaña", placeholder: "ID de marketing" },
+    { name: "comentarios", label: "Comentarios generales", tipo: "textarea", ancho: "full" },
+  ];
+}
+
+export const filaAgenda = (e?: import("@/lib/db").EntradaAgenda | null) => ({
+  tipo: e?.tipo ?? "llamada",
+  estado: e?.estado ?? "planificado",
+  asunto: e?.asunto ?? "",
+  contacto: e?.contacto ?? "",
+  aplicacion_id: e?.aplicacionId ?? 0,
+  fecha_planificada: (e?.fechaPlanificada ?? new Date().toISOString()).slice(0, 10),
+  fecha_real: e?.fechaReal ? e.fechaReal.slice(0, 10) : "",
+  origen: e?.origen ?? "manual",
+  referencia_externa: e?.referenciaExterna ?? "",
+  comentarios: e?.comentarios ?? "",
+});
