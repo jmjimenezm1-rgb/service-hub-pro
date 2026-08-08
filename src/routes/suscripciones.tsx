@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Repeat } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { FiltroClienteAviso, filtrarPorCliente, useClienteFiltro } from "@/lib/filtro-cliente";
 import { StatCard } from "@/components/shared/StatCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable, type Columna } from "@/components/shared/DataTable";
@@ -43,7 +44,8 @@ function SuscripcionesPage() {
     setEditando(x);
     setFormAbierto(true);
   };
-  const suscripciones = useSuscripciones();
+  const clienteFiltro = useClienteFiltro();
+  const suscripciones = filtrarPorCliente(useSuscripciones(), clienteFiltro, (s) => s.clienteId);
   const { getAplicacion, getCliente, clientes, aplicaciones } = useCatalogo();
   const activas = suscripciones.filter((s) => s.estado === "activa");
   const ingresos = activas.reduce((s, x) => s + x.precio * (1 - x.descuento / 100), 0);

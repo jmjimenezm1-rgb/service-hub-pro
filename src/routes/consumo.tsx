@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Activity, Gauge, AlertTriangle, Download } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { FiltroClienteAviso, filtrarPorCliente, useClienteFiltro } from "@/lib/filtro-cliente";
 import { StatCard } from "@/components/shared/StatCard";
 import { DataTable, type Columna } from "@/components/shared/DataTable";
 import { Button } from "@/components/ui/button";
