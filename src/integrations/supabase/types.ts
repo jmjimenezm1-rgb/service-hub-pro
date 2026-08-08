@@ -14,6 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
+      agenda_cliente: {
+        Row: {
+          aplicacion_id: number | null
+          asunto: string
+          autor: string
+          cliente_id: number
+          comentarios: string
+          contacto: string
+          created_at: string
+          deleted_at: string | null
+          estado: string
+          fecha_planificada: string
+          fecha_real: string | null
+          id: number
+          origen: string
+          referencia_externa: string
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          aplicacion_id?: number | null
+          asunto: string
+          autor?: string
+          cliente_id: number
+          comentarios?: string
+          contacto?: string
+          created_at?: string
+          deleted_at?: string | null
+          estado?: string
+          fecha_planificada?: string
+          fecha_real?: string | null
+          id?: number
+          origen?: string
+          referencia_externa?: string
+          tipo?: string
+          updated_at?: string
+        }
+        Update: {
+          aplicacion_id?: number | null
+          asunto?: string
+          autor?: string
+          cliente_id?: number
+          comentarios?: string
+          contacto?: string
+          created_at?: string
+          deleted_at?: string | null
+          estado?: string
+          fecha_planificada?: string
+          fecha_real?: string | null
+          id?: number
+          origen?: string
+          referencia_externa?: string
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agenda_cliente_aplicacion_id_fkey"
+            columns: ["aplicacion_id"]
+            isOneToOne: false
+            referencedRelation: "aplicaciones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agenda_cliente_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       aplicaciones: {
         Row: {
           categoria: string
