@@ -67,7 +67,8 @@ const fechaHora = (iso: string) =>
   new Intl.DateTimeFormat("es-ES", { dateStyle: "short", timeStyle: "short" }).format(new Date(iso));
 
 function NotificacionesPage() {
-  const notificaciones = useNotificaciones();
+  const clienteFiltro = useClienteFiltro();
+  const notificaciones = filtrarPorCliente(useNotificaciones(), clienteFiltro, (n) => n.clienteId ?? null);
   const { getAplicacion, getCliente } = useCatalogo();
   const [seleccion, setSeleccion] = useState<Notificacion | null>(null);
   const [formAbierto, setFormAbierto] = useState(false);
@@ -148,6 +149,8 @@ function NotificacionesPage() {
         <StatCard label="Pendientes de envío" value={pendientes} hint="en cola" />
         <StatCard label="Fallidas" value={fallidas} icon={AlertTriangle} hint="requieren revisión" />
       </section>
+
+      <FiltroClienteAviso />
 
       <DataTable
         data={notificaciones}

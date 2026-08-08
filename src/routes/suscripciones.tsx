@@ -123,6 +123,8 @@ function SuscripcionesPage() {
         />
       </section>
 
+      <FiltroClienteAviso />
+
       <DataTable
         data={suscripciones}
         columnas={columnas}
