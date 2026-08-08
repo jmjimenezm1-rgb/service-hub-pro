@@ -18,6 +18,7 @@ import { Route as NotificacionesRouteImport } from './routes/notificaciones'
 import { Route as PermisosRouteImport } from './routes/permisos'
 import { Route as SuscripcionesRouteImport } from './routes/suscripciones'
 import { Route as UsuariosRouteImport } from './routes/usuarios'
+import { Route as CrmClienteIdRouteImport } from './routes/crm.$clienteId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -64,28 +65,35 @@ const UsuariosRoute = UsuariosRouteImport.update({
   path: '/usuarios',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CrmClienteIdRoute = CrmClienteIdRouteImport.update({
+  id: '/$clienteId',
+  path: '/$clienteId',
+  getParentRoute: () => CrmRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aplicaciones': typeof AplicacionesRoute
   '/auth': typeof AuthRoute
   '/consumo': typeof ConsumoRoute
-  '/crm': typeof CrmRoute
+  '/crm': typeof CrmRouteWithChildren
   '/notificaciones': typeof NotificacionesRoute
   '/permisos': typeof PermisosRoute
   '/suscripciones': typeof SuscripcionesRoute
   '/usuarios': typeof UsuariosRoute
+  '/crm/$clienteId': typeof CrmClienteIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aplicaciones': typeof AplicacionesRoute
   '/auth': typeof AuthRoute
   '/consumo': typeof ConsumoRoute
-  '/crm': typeof CrmRoute
+  '/crm': typeof CrmRouteWithChildren
   '/notificaciones': typeof NotificacionesRoute
   '/permisos': typeof PermisosRoute
   '/suscripciones': typeof SuscripcionesRoute
   '/usuarios': typeof UsuariosRoute
+  '/crm/$clienteId': typeof CrmClienteIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -93,11 +101,12 @@ export interface FileRoutesById {
   '/aplicaciones': typeof AplicacionesRoute
   '/auth': typeof AuthRoute
   '/consumo': typeof ConsumoRoute
-  '/crm': typeof CrmRoute
+  '/crm': typeof CrmRouteWithChildren
   '/notificaciones': typeof NotificacionesRoute
   '/permisos': typeof PermisosRoute
   '/suscripciones': typeof SuscripcionesRoute
   '/usuarios': typeof UsuariosRoute
+  '/crm/$clienteId': typeof CrmClienteIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
+    | '/crm/$clienteId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
+    | '/crm/$clienteId'
   id:
     | '__root__'
     | '/'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
+    | '/crm/$clienteId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -140,7 +152,7 @@ export interface RootRouteChildren {
   AplicacionesRoute: typeof AplicacionesRoute
   AuthRoute: typeof AuthRoute
   ConsumoRoute: typeof ConsumoRoute
-  CrmRoute: typeof CrmRoute
+  CrmRoute: typeof CrmRouteWithChildren
   NotificacionesRoute: typeof NotificacionesRoute
   PermisosRoute: typeof PermisosRoute
   SuscripcionesRoute: typeof SuscripcionesRoute
@@ -212,15 +224,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UsuariosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/crm/$clienteId': {
+      id: '/crm/$clienteId'
+      path: '/$clienteId'
+      fullPath: '/crm/$clienteId'
+      preLoaderRoute: typeof CrmClienteIdRouteImport
+      parentRoute: typeof CrmRoute
+    }
   }
 }
+
+interface CrmRouteChildren {
+  CrmClienteIdRoute: typeof CrmClienteIdRoute
+}
+
+const CrmRouteChildren: CrmRouteChildren = {
+  CrmClienteIdRoute: CrmClienteIdRoute,
+}
+
+const CrmRouteWithChildren = CrmRoute._addFileChildren(CrmRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AplicacionesRoute: AplicacionesRoute,
   AuthRoute: AuthRoute,
   ConsumoRoute: ConsumoRoute,
-  CrmRoute: CrmRoute,
+  CrmRoute: CrmRouteWithChildren,
   NotificacionesRoute: NotificacionesRoute,
   PermisosRoute: PermisosRoute,
   SuscripcionesRoute: SuscripcionesRoute,
@@ -229,13 +258,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -8,7 +8,10 @@ import { useClientes } from "@/lib/db";
  * para mostrar únicamente los registros de la empresa desde la que se accede.
  */
 export function useClienteFiltro(): number | null {
-  const search = useRouterState({ select: (s) => s.location.search }) as Record<string, unknown>;
+  const search = useRouterState({ select: (s) => s.location.search }) as unknown as Record<
+    string,
+    unknown
+  >;
   const bruto = search?.["cliente"];
   const id = Number(bruto);
   return bruto !== undefined && bruto !== "" && Number.isFinite(id) ? id : null;
