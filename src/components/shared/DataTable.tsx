@@ -1,5 +1,7 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useRouterState } from "@tanstack/react-router";
 import { Search, ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
+
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -31,6 +33,8 @@ export interface FiltroDef<T> {
   label: string;
   opciones: string[];
   match: (row: T, valor: string) => boolean;
+  /** Nombre del parámetro de URL que preselecciona este filtro. */
+  param?: string;
 }
 
 /** Filtro de casilla, marcado por defecto salvo que se indique lo contrario. */
@@ -39,7 +43,11 @@ export interface CheckDef<T> {
   /** Devuelve true si la fila debe mostrarse cuando la casilla está marcada. */
   mostrar: (row: T) => boolean;
   porDefecto?: boolean;
+  /** Si la URL trae este parámetro (con este valor, si se indica), la casilla se desmarca. */
+  param?: string;
+  paramValor?: string;
 }
+
 
 /**
  * Tabla reutilizable por todos los módulos: búsqueda, filtros y paginación.
@@ -63,12 +71,57 @@ export function DataTable<T extends { id: number }>({
   porPagina?: number;
   vacio?: string;
 }) {
+  const busqueda = useRouterState({ select: (s) => s.location.search }) as unknown as Record<
+    string,
+    unknown
+  >;
+  const leer = (p?: string) => (p ? (busqueda?.[p] as string | undefined) : undefined);
+
   const [q, setQ] = useState("");
-  const [valores, setValores] = useState<Record<string, string>>({});
+  const [valores, setValores] = useState<Record<string, string>>(() =>
+    Object.fromEntries(
+      filtros
+        .map((f) => [f.label, leer(f.param)] as const)
+        .filter(([, v]) => v !== undefined && v !== "")
+        .map(([l, v]) => [l, String(v)]),
+    ),
+  );
   const [pagina, setPagina] = useState(1);
   const [marcados, setMarcados] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(checks.map((c) => [c.label, c.porDefecto !== false])),
+    Object.fromEntries(
+      checks.map((c) => {
+        const v = leer(c.param);
+        const desactivar =
+          v !== undefined && v !== "" && (c.paramValor === undefined || c.paramValor === String(v));
+        return [c.label, desactivar ? false : c.porDefecto !== false];
+      }),
+    ),
   );
+
+  // Al llegar desde un cuadro de indicadores, la URL trae el filtro a aplicar.
+  const urlKey = JSON.stringify(busqueda ?? {});
+  useEffect(() => {
+    setValores((prev) => {
+      const next = { ...prev };
+      for (const f of filtros) {
+        const v = leer(f.param);
+        if (v !== undefined && v !== "") next[f.label] = String(v);
+      }
+      return next;
+    });
+    setMarcados((prev) => {
+      const next = { ...prev };
+      for (const c of checks) {
+        const v = leer(c.param);
+        if (v !== undefined && v !== "" && (c.paramValor === undefined || c.paramValor === String(v)))
+          next[c.label] = false;
+      }
+      return next;
+    });
+    setPagina(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlKey]);
+
 
   const filtrados = useMemo(() => {
     const term = q.trim().toLowerCase();

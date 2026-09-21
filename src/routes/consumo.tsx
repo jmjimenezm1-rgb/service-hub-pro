@@ -95,10 +95,17 @@ function ConsumoPage() {
       />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Registros del periodo" value={consumos.length} icon={Activity} />
-        <StatCard label="Coste de consumo" value={eur(costeTotal)} icon={Gauge} delta={11} />
+        <StatCard label="Registros del periodo" value={consumos.length} icon={Activity} to="/consumo" search={{ exceso: "todos" }} />
+        <StatCard label="Coste de consumo" value={eur(costeTotal)} icon={Gauge} delta={11} to="/consumo" search={{ exceso: "todos" }} />
         <StatCard label="Métricas activas" value={new Set(consumos.map((c) => c.metrica)).size} />
-        <StatCard label="Límites excedidos" value={excedidos.length} icon={AlertTriangle} hint="facturables como exceso" />
+        <StatCard
+          label="Límites excedidos"
+          value={excedidos.length}
+          icon={AlertTriangle}
+          hint="facturables como exceso"
+          to="/consumo"
+          search={{ exceso: "con exceso" }}
+        />
       </section>
 
       <FiltroClienteAviso />
@@ -111,11 +118,22 @@ function ConsumoPage() {
         filtros={[
           {
             label: "Aplicación",
+            param: "aplicacion",
             opciones: [...new Set(consumos.map((c) => getAplicacion(c.aplicacionId)!.nombre))],
             match: (c, v) => getAplicacion(c.aplicacionId)?.nombre === v,
           },
+          {
+            label: "Exceso",
+            param: "exceso",
+            opciones: ["con exceso", "sin exceso"],
+            match: (c, v) => {
+              const hay = c.incluido > 0 && c.consumido > c.incluido;
+              return v === "con exceso" ? hay : !hay;
+            },
+          },
         ]}
       />
+
     </>
   );
 }

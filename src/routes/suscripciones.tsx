@@ -114,9 +114,9 @@ function SuscripcionesPage() {
       />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Suscripciones" value={suscripciones.length} icon={Repeat} />
-        <StatCard label="Activas" value={activas.length} />
-        <StatCard label="Ingreso contratado" value={eur(ingresos)} hint="neto de descuentos" />
+        <StatCard label="Suscripciones" value={suscripciones.length} icon={Repeat} to="/suscripciones" search={{ estado: "todos" }} />
+        <StatCard label="Activas" value={activas.length} to="/suscripciones" search={{ estado: "activa" }} />
+        <StatCard label="Ingreso contratado" value={eur(ingresos)} hint="neto de descuentos" to="/suscripciones" search={{ estado: "activa" }} />
         <StatCard
           label="Renovación automática"
           value={`${Math.round((suscripciones.filter((s) => s.renovacionAutomatica).length / suscripciones.length) * 100)}%`}
@@ -140,14 +140,16 @@ function SuscripcionesPage() {
           },
         ]}
         filtros={[
-          { label: "Estado", opciones: ["activa", "prueba", "suspendida", "cancelada"], match: (s, v) => s.estado === v },
+          { label: "Estado", param: "estado", opciones: ["activa", "prueba", "suspendida", "cancelada"], match: (s, v) => s.estado === v },
           {
             label: "Periodicidad",
+            param: "periodicidad",
             opciones: ["mensual", "trimestral", "semestral", "anual"],
             match: (s, v) => s.periodicidad === v,
           },
         ]}
       />
+
 
       <RecordFormDialog
         open={formAbierto}
