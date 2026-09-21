@@ -144,10 +144,10 @@ function NotificacionesPage() {
       />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Notificaciones (30 d)" value={notificaciones.length} icon={Bell} />
-        <StatCard label="Enviadas" value={enviadas} hint="entregadas correctamente" />
-        <StatCard label="Pendientes de envío" value={pendientes} hint="en cola" />
-        <StatCard label="Fallidas" value={fallidas} icon={AlertTriangle} hint="requieren revisión" />
+        <StatCard label="Notificaciones (30 d)" value={notificaciones.length} icon={Bell} to="/notificaciones" search={{ estado: "todos" }} />
+        <StatCard label="Enviadas" value={enviadas} hint="entregadas correctamente" to="/notificaciones" search={{ estado: "enviada" }} />
+        <StatCard label="Pendientes de envío" value={pendientes} hint="en cola" to="/notificaciones" search={{ estado: "pendiente" }} />
+        <StatCard label="Fallidas" value={fallidas} icon={AlertTriangle} hint="requieren revisión" to="/notificaciones" search={{ estado: "fallida" }} />
       </section>
 
       <FiltroClienteAviso />
@@ -161,21 +161,25 @@ function NotificacionesPage() {
         filtros={[
           {
             label: "Canal",
+            param: "canal",
             opciones: ["email", "interna", "sms", "webhook"],
             match: (n, v) => n.canal === v,
           },
           {
             label: "Categoría",
+            param: "categoria",
             opciones: ["renovacion", "impago", "consumo", "seguridad", "sistema", "comercial"],
             match: (n, v) => n.categoria === v,
           },
           {
             label: "Estado",
+            param: "estado",
             opciones: ["enviada", "pendiente", "leida", "fallida"],
             match: (n, v) => n.estado === v,
           },
         ]}
       />
+
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold tracking-tight">Plantillas y reglas de disparo</h2>

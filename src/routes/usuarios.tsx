@@ -137,10 +137,10 @@ function UsuariosPage() {
       />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Usuarios totales" value={usuarios.length} icon={Users} />
-        <StatCard label="Activos" value={usuarios.filter((u) => u.estado === "activo").length} />
+        <StatCard label="Usuarios totales" value={usuarios.length} icon={Users} to="/usuarios" search={{ estado: "todos" }} />
+        <StatCard label="Activos" value={usuarios.filter((u) => u.estado === "activo").length} to="/usuarios" search={{ estado: "activo" }} />
         <StatCard label="Con MFA" value={`${Math.round((usuarios.filter((u) => u.mfa).length / usuarios.length) * 100)}%`} icon={ShieldCheck} />
-        <StatCard label="Bloqueados / inactivos" value={usuarios.filter((u) => u.estado !== "activo").length} />
+        <StatCard label="Bloqueados / inactivos" value={usuarios.filter((u) => u.estado !== "activo").length} to="/usuarios" search={{ estado: "inactivo" }} />
       </section>
 
       <FiltroClienteAviso />
@@ -158,9 +158,10 @@ function UsuariosPage() {
           },
         ]}
         filtros={[
-          { label: "Estado", opciones: ["activo", "inactivo", "bloqueado"], match: (u, v) => u.estado === v },
+          { label: "Estado", param: "estado", opciones: ["activo", "inactivo", "bloqueado"], match: (u, v) => u.estado === v },
           {
             label: "Rol",
+            param: "rol",
             opciones: roles.length
               ? roles.map((r) => r.nombre)
               : [
@@ -175,6 +176,7 @@ function UsuariosPage() {
           },
         ]}
       />
+
 
       <RecordFormDialog
         open={formAbierto}
