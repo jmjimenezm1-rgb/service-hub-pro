@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Users2,
   Wallet,
@@ -93,15 +93,16 @@ function Dashboard() {
       />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Clientes" value={clientes.length} icon={Users2} delta={12} hint="vs. mes anterior" />
-        <StatCard label="Clientes activos" value={activos} icon={UserCheck} hint={`${prueba} en prueba`} />
-        <StatCard label="MRR" value={eur(mrr)} icon={Wallet} delta={8} hint="ingreso recurrente" />
-        <StatCard label="ARR" value={eur(mrr * 12)} icon={TrendingUp} delta={19} hint="proyección anual" />
-        <StatCard label="Facturación mensual" value={eur(64100)} icon={ReceiptEuro} delta={3} hint="agosto" />
-        <StatCard label="Facturación anual" value={eur(630830)} icon={ReceiptEuro} delta={21} hint="acumulado 12 m" />
-        <StatCard label="Cobros pendientes" value={eur(15870)} icon={AlertTriangle} delta={-6} hint={`${impagos} cliente(s) en impago`} />
-        <StatCard label="Usuarios activos" value={num(1512)} icon={Activity} delta={6} hint="412 conectados hoy" />
+        <StatCard label="Clientes" value={clientes.length} icon={Users2} delta={12} hint="vs. mes anterior" to="/crm" search={{ estado: "todos" }} />
+        <StatCard label="Clientes activos" value={activos} icon={UserCheck} hint={`${prueba} en prueba`} to="/crm" search={{ estado: "activo" }} />
+        <StatCard label="MRR" value={eur(mrr)} icon={Wallet} delta={8} hint="ingreso recurrente" to="/suscripciones" search={{ estado: "activa" }} />
+        <StatCard label="ARR" value={eur(mrr * 12)} icon={TrendingUp} delta={19} hint="proyección anual" to="/suscripciones" search={{ estado: "activa" }} />
+        <StatCard label="Facturación mensual" value={eur(64100)} icon={ReceiptEuro} delta={3} hint="agosto" to="/suscripciones" search={{ periodicidad: "mensual" }} />
+        <StatCard label="Facturación anual" value={eur(630830)} icon={ReceiptEuro} delta={21} hint="acumulado 12 m" to="/suscripciones" search={{ periodicidad: "anual" }} />
+        <StatCard label="Cobros pendientes" value={eur(15870)} icon={AlertTriangle} delta={-6} hint={`${impagos} cliente(s) en impago`} to="/crm" search={{ estado: "impago" }} />
+        <StatCard label="Usuarios activos" value={num(1512)} icon={Activity} delta={6} hint="412 conectados hoy" to="/usuarios" search={{ estado: "activo" }} />
       </section>
+
 
       <section className="grid gap-4 lg:grid-cols-3">
         <div className="surface p-4 lg:col-span-2">
@@ -236,16 +237,22 @@ function Dashboard() {
         <h2 className="text-sm font-semibold">Aplicaciones más utilizadas</h2>
         <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {usoPorApp.slice(0, 4).map((a) => (
-            <div key={a.nombre} className="rounded-xl border border-border p-3">
+            <Link
+              key={a.nombre}
+              to="/consumo"
+              search={{ aplicacion: a.nombre } as never}
+              className="rounded-xl border border-border p-3 transition hover:border-primary/40 hover:shadow-md"
+            >
               <p className="text-sm font-medium">{a.nombre}</p>
               <p className="mt-1 text-lg font-semibold tabular-nums">{eur(a.consumo)}</p>
               <p className="text-xs text-muted-foreground">
                 {a.suscripciones} suscripción(es) · {usuarios.filter((u) => u.aplicaciones.includes(aplicaciones.find((ap) => ap.nombre === a.nombre)!.id)).length} usuarios
               </p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
+
     </>
   );
 }

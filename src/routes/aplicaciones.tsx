@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import { Plus, ExternalLink, BookOpen, Code2, Pencil } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -43,8 +43,13 @@ function AplicacionesPage() {
     setFormAbierto(true);
   };
   const todas = useAplicaciones();
-  const [ocultarRetiradas, setOcultarRetiradas] = useState(true);
-  const aplicaciones = ocultarRetiradas ? todas.filter((a) => a.estado !== "retirada") : todas;
+  const busqueda = useRouterState({ select: (s) => s.location.search }) as unknown as Record<string, unknown>;
+  const [ocultarRetiradas, setOcultarRetiradas] = useState(busqueda?.["estado"] !== "retirada");
+  const filtroEstado = busqueda?.["estado"] as string | undefined;
+  const aplicaciones = todas
+    .filter((a) => (ocultarRetiradas ? a.estado !== "retirada" : true))
+    .filter((a) => (filtroEstado && filtroEstado !== "todos" ? a.estado === filtroEstado : true));
+
   const suscripciones = useSuscripciones();
   return (
     <>
