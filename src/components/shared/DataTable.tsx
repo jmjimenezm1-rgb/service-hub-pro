@@ -69,12 +69,33 @@ export function DataTable<T extends { id: number }>({
   porPagina?: number;
   vacio?: string;
 }) {
+  const busqueda = useRouterState({ select: (s) => s.location.search }) as unknown as Record<
+    string,
+    unknown
+  >;
+  const leer = (p?: string) => (p ? (busqueda?.[p] as string | undefined) : undefined);
+
   const [q, setQ] = useState("");
-  const [valores, setValores] = useState<Record<string, string>>({});
+  const [valores, setValores] = useState<Record<string, string>>(() =>
+    Object.fromEntries(
+      filtros
+        .map((f) => [f.label, leer(f.param)] as const)
+        .filter(([, v]) => v !== undefined && v !== "")
+        .map(([l, v]) => [l, String(v)]),
+    ),
+  );
   const [pagina, setPagina] = useState(1);
   const [marcados, setMarcados] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(checks.map((c) => [c.label, c.porDefecto !== false])),
+    Object.fromEntries(
+      checks.map((c) => {
+        const v = leer(c.param);
+        const desactivar =
+          v !== undefined && v !== "" && (c.paramValor === undefined || c.paramValor === String(v));
+        return [c.label, desactivar ? false : c.porDefecto !== false];
+      }),
+    ),
   );
+
 
   const filtrados = useMemo(() => {
     const term = q.trim().toLowerCase();
