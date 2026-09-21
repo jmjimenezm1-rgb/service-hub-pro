@@ -1,5 +1,7 @@
 import { useMemo, useState, type ReactNode } from "react";
+import { useRouterState } from "@tanstack/react-router";
 import { Search, ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
+
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
