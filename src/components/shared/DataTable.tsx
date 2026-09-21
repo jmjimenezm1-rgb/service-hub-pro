@@ -98,6 +98,30 @@ export function DataTable<T extends { id: number }>({
     ),
   );
 
+  // Al llegar desde un cuadro de indicadores, la URL trae el filtro a aplicar.
+  const urlKey = JSON.stringify(busqueda ?? {});
+  useEffect(() => {
+    setValores((prev) => {
+      const next = { ...prev };
+      for (const f of filtros) {
+        const v = leer(f.param);
+        if (v !== undefined && v !== "") next[f.label] = String(v);
+      }
+      return next;
+    });
+    setMarcados((prev) => {
+      const next = { ...prev };
+      for (const c of checks) {
+        const v = leer(c.param);
+        if (v !== undefined && v !== "" && (c.paramValor === undefined || c.paramValor === String(v)))
+          next[c.label] = false;
+      }
+      return next;
+    });
+    setPagina(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlKey]);
+
 
   const filtrados = useMemo(() => {
     const term = q.trim().toLowerCase();
