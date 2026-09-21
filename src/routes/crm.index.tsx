@@ -75,27 +75,36 @@ function CrmPage() {
       />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Total clientes" value={clientes.length} icon={Building2} />
-        <StatCard label="Activos" value={clientes.filter((c) => c.estado === "activo").length} />
-        <StatCard label="En prueba" value={clientes.filter((c) => c.estado === "prueba").length} />
-        <StatCard label="Prospectos" value={clientes.filter((c) => c.estado === "prospecto").length} />
+        <StatCard label="Total clientes" value={clientes.length} icon={Building2} to="/crm" search={{ estado: "todos" }} />
+        <StatCard label="Activos" value={clientes.filter((c) => c.estado === "activo").length} to="/crm" search={{ estado: "activo" }} />
+        <StatCard label="En prueba" value={clientes.filter((c) => c.estado === "prueba").length} to="/crm" search={{ estado: "prueba" }} />
+        <StatCard label="Prospectos" value={clientes.filter((c) => c.estado === "prospecto").length} to="/crm" search={{ estado: "prospecto" }} />
       </section>
 
       <DataTable
         data={clientes}
         columnas={columnas}
         onRowClick={(c) => navigate({ to: "/crm/$clienteId", params: { clienteId: String(c.id) } })}
-        checks={[{ label: "No mostrar clientes dados de baja", mostrar: (c) => c.estado !== "baja" }]}
+        checks={[
+          {
+            label: "No mostrar clientes dados de baja",
+            mostrar: (c) => c.estado !== "baja",
+            param: "estado",
+            paramValor: "baja",
+          },
+        ]}
         buscar={(c) => `${c.nombreComercial} ${c.razonSocial} ${c.nif} ${c.email} ${c.sector} ${c.provincia}`}
         filtros={[
           {
             label: "Estado",
+            param: "estado",
             opciones: ["activo", "prueba", "prospecto", "impago", "baja"],
             match: (c, v) => c.estado === v,
           },
-          { label: "País", opciones: ["España", "Portugal"], match: (c, v) => c.pais === v },
+          { label: "País", param: "pais", opciones: ["España", "Portugal"], match: (c, v) => c.pais === v },
         ]}
       />
+
 
       <RecordFormDialog
         open={formAbierto}
