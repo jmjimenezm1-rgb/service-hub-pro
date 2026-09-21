@@ -55,7 +55,7 @@ export function StatCard({
       <Link
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         to={to as any}
-        search={(search ?? {}) as never}
+        search={((prev: Record<string, unknown>) => ({ ...prev, ...(search ?? {}) })) as never}
         className={cn(
           "surface block p-4 text-left transition hover:border-primary/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           className,
