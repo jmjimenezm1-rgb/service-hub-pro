@@ -31,6 +31,8 @@ export interface FiltroDef<T> {
   label: string;
   opciones: string[];
   match: (row: T, valor: string) => boolean;
+  /** Nombre del parámetro de URL que preselecciona este filtro. */
+  param?: string;
 }
 
 /** Filtro de casilla, marcado por defecto salvo que se indique lo contrario. */
@@ -39,7 +41,11 @@ export interface CheckDef<T> {
   /** Devuelve true si la fila debe mostrarse cuando la casilla está marcada. */
   mostrar: (row: T) => boolean;
   porDefecto?: boolean;
+  /** Si la URL trae este parámetro (con este valor, si se indica), la casilla se desmarca. */
+  param?: string;
+  paramValor?: string;
 }
+
 
 /**
  * Tabla reutilizable por todos los módulos: búsqueda, filtros y paginación.
