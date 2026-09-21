@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 export function StatCard({
@@ -9,6 +10,8 @@ export function StatCard({
   delta,
   icon: Icon,
   className,
+  to,
+  search,
 }: {
   label: string;
   value: string | number;
@@ -16,10 +19,15 @@ export function StatCard({
   delta?: number;
   icon?: LucideIcon;
   className?: string;
+  /** Destino al pulsar el cuadro (módulo correspondiente). */
+  to?: string;
+  /** Filtros que se aplicarán en el módulo de destino. */
+  search?: Record<string, string | number>;
 }) {
   const positivo = (delta ?? 0) >= 0;
-  return (
-    <div className={cn("surface p-4", className)}>
+
+  const contenido = (
+    <>
       <div className="flex items-start justify-between gap-3">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
         {Icon ? <Icon className="size-4 shrink-0 text-muted-foreground" /> : null}
@@ -39,6 +47,24 @@ export function StatCard({
         )}
         {hint ? <span className="text-muted-foreground">{hint}</span> : null}
       </div>
-    </div>
+    </>
   );
+
+  if (to) {
+    return (
+      <Link
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        to={to as any}
+        search={(search ?? {}) as never}
+        className={cn(
+          "surface block p-4 text-left transition hover:border-primary/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          className,
+        )}
+      >
+        {contenido}
+      </Link>
+    );
+  }
+
+  return <div className={cn("surface p-4", className)}>{contenido}</div>;
 }
