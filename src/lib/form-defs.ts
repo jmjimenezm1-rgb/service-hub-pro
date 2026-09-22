@@ -245,12 +245,52 @@ export const camposNotificacion: Campo[] = [
   { name: "asunto", label: "Asunto", requerido: true, ancho: "full" },
   { name: "mensaje", label: "Mensaje", tipo: "textarea" },
   { name: "destinatario", label: "Destinatario", tipo: "email" },
-  { name: "canal", label: "Canal", tipo: "select", opciones: op("email", "interna", "sms", "push") },
-  { name: "categoria", label: "Categoría", tipo: "select", opciones: op("renovacion", "impago", "consumo", "sistema", "soporte", "comercial") },
-  { name: "prioridad", label: "Prioridad", tipo: "select", opciones: op("baja", "media", "alta", "critica") },
+  { name: "canal", label: "Canal", tipo: "select", opciones: op("email", "interna", "sms", "webhook") },
+  { name: "categoria", label: "Categoría", tipo: "select", opciones: op("renovacion", "impago", "consumo", "seguridad", "sistema", "comercial") },
+  { name: "prioridad", label: "Prioridad", tipo: "select", opciones: op("baja", "media", "alta") },
   { name: "estado", label: "Estado", tipo: "select", opciones: op("pendiente", "enviada", "leida", "fallida") },
   { name: "plantilla", label: "Plantilla" },
 ];
+
+/** Formulario de notificación con selección de cliente, aplicación y plantilla. */
+export function camposNotificacionCon(
+  clientes: { id: number; nombreComercial: string }[],
+  aplicaciones: { id: number; nombre: string }[],
+  plantillas: { codigo: string; nombre: string }[],
+): Campo[] {
+  return [
+    ...camposNotificacion.slice(0, 7),
+    {
+      name: "plantilla",
+      label: "Plantilla",
+      tipo: "select",
+      opciones: [
+        { value: "", label: "Sin plantilla" },
+        ...plantillas.map((p) => ({ value: p.codigo, label: p.nombre })),
+      ],
+    },
+    {
+      name: "cliente_id",
+      label: "Cliente",
+      tipo: "select",
+      numerico: true,
+      opciones: [
+        { value: "", label: "Plataforma (sin cliente)" },
+        ...clientes.map((c) => ({ value: String(c.id), label: c.nombreComercial })),
+      ],
+    },
+    {
+      name: "aplicacion_id",
+      label: "Aplicación",
+      tipo: "select",
+      numerico: true,
+      opciones: [
+        { value: "", label: "Sin aplicación" },
+        ...aplicaciones.map((a) => ({ value: String(a.id), label: a.nombre })),
+      ],
+    },
+  ];
+}
 
 export const filaNotificacion = (n?: Notificacion | null) => ({
   asunto: n?.asunto ?? "",
@@ -261,7 +301,48 @@ export const filaNotificacion = (n?: Notificacion | null) => ({
   prioridad: n?.prioridad ?? "media",
   estado: n?.estado ?? "pendiente",
   plantilla: n?.plantilla ?? "",
+  cliente_id: n?.clienteId != null ? String(n.clienteId) : "",
+  aplicacion_id: n?.aplicacionId != null ? String(n.aplicacionId) : "",
 });
+
+/* --------------------- Plantillas de notificación --------------------- */
+
+export const camposPlantilla: Campo[] = [
+  { name: "codigo", label: "Código", requerido: true, placeholder: "renovacion-proxima" },
+  { name: "nombre", label: "Nombre", requerido: true },
+  { name: "categoria", label: "Categoría", tipo: "select", opciones: op("renovacion", "impago", "consumo", "seguridad", "sistema", "comercial") },
+  { name: "activa", label: "Activa", tipo: "switch" },
+  {
+    name: "canales",
+    label: "Canales",
+    tipo: "multiselect",
+    opciones: op("email", "interna", "sms", "webhook"),
+  },
+  { name: "disparador", label: "Regla de disparo", ancho: "full" },
+  { name: "asunto", label: "Asunto de la plantilla", ancho: "full" },
+  { name: "cuerpo", label: "Cuerpo del mensaje", tipo: "textarea" },
+];
+
+export const filaPlantilla = (p?: {
+  codigo: string;
+  nombre: string;
+  categoria: string;
+  canales: string[];
+  disparador: string;
+  asunto: string;
+  cuerpo: string;
+  activa: boolean;
+} | null) => ({
+  codigo: p?.codigo ?? "",
+  nombre: p?.nombre ?? "",
+  categoria: p?.categoria ?? "sistema",
+  activa: p?.activa ?? true,
+  canales: p?.canales ?? ["email"],
+  disparador: p?.disparador ?? "",
+  asunto: p?.asunto ?? "",
+  cuerpo: p?.cuerpo ?? "",
+});
+
 
 /* ------------------------------ Agenda -------------------------------- */
 
