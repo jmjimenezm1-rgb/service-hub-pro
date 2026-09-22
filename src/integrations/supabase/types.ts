@@ -433,6 +433,51 @@ export type Database = {
           },
         ]
       }
+      plantillas_notificacion: {
+        Row: {
+          activa: boolean
+          asunto: string
+          canales: string[]
+          categoria: string
+          codigo: string
+          created_at: string
+          cuerpo: string
+          deleted_at: string | null
+          disparador: string
+          id: number
+          nombre: string
+          updated_at: string
+        }
+        Insert: {
+          activa?: boolean
+          asunto?: string
+          canales?: string[]
+          categoria?: string
+          codigo: string
+          created_at?: string
+          cuerpo?: string
+          deleted_at?: string | null
+          disparador?: string
+          id?: number
+          nombre: string
+          updated_at?: string
+        }
+        Update: {
+          activa?: boolean
+          asunto?: string
+          canales?: string[]
+          categoria?: string
+          codigo?: string
+          created_at?: string
+          cuerpo?: string
+          deleted_at?: string | null
+          disparador?: string
+          id?: number
+          nombre?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       rol_permisos: {
         Row: {
           created_at: string

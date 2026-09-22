@@ -321,3 +321,35 @@ export const agendaQuery = queryOptions({
 });
 
 export const useAgenda = () => useQuery(agendaQuery).data ?? (vacio as EntradaAgenda[]);
+
+/* --------------------- Plantillas de notificación --------------------- */
+
+export interface PlantillaNotif {
+  id: number;
+  codigo: string;
+  nombre: string;
+  categoria: string;
+  canales: string[];
+  disparador: string;
+  asunto: string;
+  cuerpo: string;
+  activa: boolean;
+}
+
+export const plantillasQuery = queryOptions({
+  queryKey: ["plantillas_notificacion"],
+  queryFn: () =>
+    listar("plantillas_notificacion", "nombre", (r: Row): PlantillaNotif => ({
+      id: Number(r.id),
+      codigo: r.codigo,
+      nombre: r.nombre,
+      categoria: r.categoria,
+      canales: r.canales ?? [],
+      disparador: r.disparador ?? "",
+      asunto: r.asunto ?? "",
+      cuerpo: r.cuerpo ?? "",
+      activa: !!r.activa,
+    })),
+});
+
+export const usePlantillas = () => useQuery(plantillasQuery).data ?? (vacio as PlantillaNotif[]);
