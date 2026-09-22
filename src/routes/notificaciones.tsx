@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import {
   Bell,
   Mail,
@@ -9,6 +11,9 @@ import {
   Webhook,
   AlertTriangle,
   CheckCheck,
+  Pencil,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { FiltroClienteAviso, filtrarPorCliente, useClienteFiltro } from "@/lib/filtro-cliente";
@@ -26,14 +31,27 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import {
-  plantillasNotificacion,
-  type CanalNotificacion,
-  type Notificacion,
-} from "@/lib/mock-data";
-import { useCatalogo, useNotificaciones } from "@/lib/db";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import type { CanalNotificacion, Notificacion } from "@/lib/mock-data";
+import { supabase } from "@/integrations/supabase/client";
+import { useCatalogo, usePlantillas, type PlantillaNotif } from "@/lib/db";
 import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
-import { camposNotificacion, filaNotificacion } from "@/lib/form-defs";
-import { useGuardarRegistro } from "@/lib/mutations";
+import { useNotificaciones } from "@/lib/db";
+import {
+  camposNotificacionCon,
+  camposPlantilla,
+  filaNotificacion,
+  filaPlantilla,
+} from "@/lib/form-defs";
+import { useEliminarRegistro, useGuardarRegistro } from "@/lib/mutations";
 
 export const Route = createFileRoute("/notificaciones")({
   head: () => ({
@@ -69,17 +87,65 @@ const fechaHora = (iso: string) =>
 function NotificacionesPage() {
   const clienteFiltro = useClienteFiltro();
   const notificaciones = filtrarPorCliente(useNotificaciones(), clienteFiltro, (n) => n.clienteId ?? null);
-  const { getAplicacion, getCliente } = useCatalogo();
+  const { getAplicacion, getCliente, clientes, aplicaciones } = useCatalogo();
+  const plantillas = usePlantillas();
+  const qc = useQueryClient();
+
   const [seleccion, setSeleccion] = useState<Notificacion | null>(null);
+  const [editando, setEditando] = useState<Notificacion | null>(null);
   const [formAbierto, setFormAbierto] = useState(false);
+  const [plantillaEdit, setPlantillaEdit] = useState<PlantillaNotif | null>(null);
+  const [formPlantilla, setFormPlantilla] = useState(false);
+  const [plantillaBorrar, setPlantillaBorrar] = useState<PlantillaNotif | null>(null);
+
   const guardar = useGuardarRegistro("notificaciones", "notificaciones", "Notificación");
+  const guardarPlantilla = useGuardarRegistro(
+    "plantillas_notificacion",
+    "plantillas_notificacion",
+    "Plantilla",
+  );
+  const eliminarPlantilla = useEliminarRegistro(
+    "plantillas_notificacion",
+    "plantillas_notificacion",
+    "Plantilla",
+  );
+
+  /** Cambio de estado en lote sobre las notificaciones visibles. */
+  const marcarTodo = useMutation({
+    mutationFn: async () => {
+      const ids = notificaciones.filter((n) => n.estado !== "leida").map((n) => n.id);
+      if (!ids.length) return 0;
+      const { error } = await supabase
+        .from("notificaciones")
+        .update({ estado: "leida" })
+        .in("id", ids);
+      if (error) throw new Error(error.message);
+      return ids.length;
+    },
+    onSuccess: (n) => {
+      qc.invalidateQueries({ queryKey: ["notificaciones"] });
+      toast.success(n ? `${n} notificaciones marcadas como leídas` : "No había avisos sin leer");
+    },
+    onError: (e: Error) =>
+      toast.error("No se pudo actualizar", {
+        description: /row-level security|JWT|permission/i.test(e.message)
+          ? "Inicia sesión para poder actualizar notificaciones."
+          : e.message,
+      }),
+  });
+
+  const cambiarEstado = (n: Notificacion, estado: string) =>
+    guardar.mutate(
+      { id: n.id, valores: { estado, ...(estado === "enviada" ? { enviada_en: new Date().toISOString() } : {}) } },
+      { onSuccess: () => setSeleccion({ ...n, estado: estado as Notificacion["estado"] }) },
+    );
 
   const columnas: Columna<Notificacion>[] = [
     {
       key: "asunto",
       header: "Notificación",
       render: (n) => {
-        const Icono = iconoCanal[n.canal];
+        const Icono = iconoCanal[n.canal] ?? Bell;
         return (
           <div className="flex items-start gap-3">
             <span className="mt-0.5 flex size-8 items-center justify-center rounded-lg bg-accent text-accent-foreground">
@@ -126,6 +192,11 @@ function NotificacionesPage() {
   const fallidas = notificaciones.filter((n) => n.estado === "fallida").length;
   const enviadas = notificaciones.filter((n) => n.estado === "enviada").length;
 
+  const abrirNueva = () => {
+    setEditando(null);
+    setFormAbierto(true);
+  };
+
   return (
     <>
       <PageHeader
@@ -133,10 +204,10 @@ function NotificacionesPage() {
         descripcion="Sistema centralizado de avisos: email, notificaciones internas, SMS y webhooks para renovaciones, impagos, consumo y seguridad."
         acciones={
           <>
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => marcarTodo.mutate()} disabled={marcarTodo.isPending}>
               <CheckCheck className="size-4" /> Marcar todo como leído
             </Button>
-            <Button onClick={() => setFormAbierto(true)}>
+            <Button onClick={abrirNueva}>
               <Send className="size-4" /> Nueva notificación
             </Button>
           </>
@@ -180,44 +251,130 @@ function NotificacionesPage() {
         ]}
       />
 
-
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold tracking-tight">Plantillas y reglas de disparo</h2>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-lg font-semibold tracking-tight">Plantillas y reglas de disparo</h2>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setPlantillaEdit(null);
+              setFormPlantilla(true);
+            }}
+          >
+            <Plus className="size-4" /> Nueva plantilla
+          </Button>
+        </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {plantillasNotificacion.map((p) => (
+          {plantillas.map((p) => (
             <div key={p.id} className="surface flex flex-col gap-3 p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold leading-tight">{p.nombre}</p>
                   <p className="mt-1 text-xs capitalize text-muted-foreground">{p.categoria}</p>
                 </div>
-                <Switch defaultChecked={p.activa} aria-label={`Activar plantilla ${p.nombre}`} />
+                <Switch
+                  checked={p.activa}
+                  aria-label={`Activar plantilla ${p.nombre}`}
+                  onCheckedChange={(v) => guardarPlantilla.mutate({ id: p.id, valores: { activa: v } })}
+                />
               </div>
               <p className="text-xs text-muted-foreground">{p.disparador}</p>
-              <div className="mt-auto flex flex-wrap gap-1">
+              <div className="mt-auto flex flex-wrap items-center gap-1">
                 {p.canales.map((c) => (
                   <Badge key={c} variant="outline" className="capitalize">
                     {c}
                   </Badge>
                 ))}
+                <div className="ml-auto flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`Editar plantilla ${p.nombre}`}
+                    onClick={() => {
+                      setPlantillaEdit(p);
+                      setFormPlantilla(true);
+                    }}
+                  >
+                    <Pencil className="size-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`Eliminar plantilla ${p.nombre}`}
+                    onClick={() => setPlantillaBorrar(p)}
+                  >
+                    <Trash2 className="size-4 text-destructive" />
+                  </Button>
+                </div>
               </div>
             </div>
           ))}
+          {plantillas.length === 0 && (
+            <p className="text-sm text-muted-foreground">Todavía no hay plantillas configuradas.</p>
+          )}
         </div>
       </section>
 
       <RecordFormDialog
         open={formAbierto}
         onOpenChange={setFormAbierto}
-        titulo="Nueva notificación"
+        titulo={editando ? "Editar notificación" : "Nueva notificación"}
         descripcion="Envío manual a través del centro de notificaciones."
-        campos={camposNotificacion}
-        valoresIniciales={filaNotificacion(null)}
+        campos={camposNotificacionCon(clientes, aplicaciones, plantillas)}
+        valoresIniciales={filaNotificacion(editando)}
         guardando={guardar.isPending}
         onSubmit={(valores) =>
-          guardar.mutate({ valores }, { onSuccess: () => setFormAbierto(false) })
+          guardar.mutate(
+            { ...(editando ? { id: editando.id } : {}), valores },
+            {
+              onSuccess: () => {
+                setFormAbierto(false);
+                setSeleccion(null);
+              },
+            },
+          )
         }
       />
+
+      <RecordFormDialog
+        open={formPlantilla}
+        onOpenChange={setFormPlantilla}
+        titulo={plantillaEdit ? "Editar plantilla" : "Nueva plantilla"}
+        descripcion="Define el disparador, los canales y el contenido del aviso."
+        campos={camposPlantilla}
+        valoresIniciales={filaPlantilla(plantillaEdit)}
+        guardando={guardarPlantilla.isPending}
+        onSubmit={(valores) =>
+          guardarPlantilla.mutate(
+            { ...(plantillaEdit ? { id: plantillaEdit.id } : {}), valores },
+            { onSuccess: () => setFormPlantilla(false) },
+          )
+        }
+      />
+
+      <AlertDialog open={!!plantillaBorrar} onOpenChange={(o) => !o && setPlantillaBorrar(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Eliminar «{plantillaBorrar?.nombre}»</AlertDialogTitle>
+            <AlertDialogDescription>
+              La plantilla dejará de estar disponible para nuevos avisos. Las notificaciones ya
+              enviadas se conservan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (plantillaBorrar) eliminarPlantilla.mutate(plantillaBorrar.id);
+                setPlantillaBorrar(null);
+              }}
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Sheet open={!!seleccion} onOpenChange={(o) => !o && setSeleccion(null)}>
         <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
@@ -263,17 +420,37 @@ function NotificacionesPage() {
                   <div className="col-span-2">
                     <dt className="text-xs text-muted-foreground">Plantilla</dt>
                     <dd className="mt-1">
-                      <Badge variant="outline">{seleccion.plantilla}</Badge>
+                      <Badge variant="outline">{seleccion.plantilla || "—"}</Badge>
                     </dd>
                   </div>
                 </dl>
 
                 <div className="flex flex-wrap gap-2">
-                  <Button variant="outline" size="sm">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={guardar.isPending}
+                    onClick={() => cambiarEstado(seleccion, "enviada")}
+                  >
                     <Send className="size-4" /> Reenviar
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={guardar.isPending || seleccion.estado === "leida"}
+                    onClick={() => cambiarEstado(seleccion, "leida")}
+                  >
                     <CheckCheck className="size-4" /> Marcar como leída
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEditando(seleccion);
+                      setFormAbierto(true);
+                    }}
+                  >
+                    <Pencil className="size-4" /> Editar
                   </Button>
                 </div>
               </div>
