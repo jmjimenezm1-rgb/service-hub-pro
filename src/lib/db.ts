@@ -353,3 +353,40 @@ export const plantillasQuery = queryOptions({
 });
 
 export const usePlantillas = () => useQuery(plantillasQuery).data ?? (vacio as PlantillaNotif[]);
+
+/* ------------------------------ Auditoría ----------------------------- */
+
+export interface EntradaAuditoria {
+  id: number;
+  tabla: string;
+  registroId: string;
+  operacion: string;
+  actor: string;
+  datosAntes: Record<string, unknown> | null;
+  datosDespues: Record<string, unknown> | null;
+  created_at: string;
+}
+
+export const auditoriaQuery = queryOptions({
+  queryKey: ["auditoria"],
+  queryFn: async (): Promise<EntradaAuditoria[]> => {
+    const { data, error } = await supabase
+      .from("auditoria" as never)
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(500);
+    if (error) throw new Error(error.message);
+    return (data ?? []).map((r: Row) => ({
+      id: Number(r.id),
+      tabla: r.tabla,
+      registroId: String(r.registro_id),
+      operacion: r.operacion,
+      actor: r.actor ?? "sistema",
+      datosAntes: r.datos_antes ?? null,
+      datosDespues: r.datos_despues ?? null,
+      created_at: r.created_at,
+    }));
+  },
+});
+
+export const useAuditoria = () => useQuery(auditoriaQuery).data ?? (vacio as EntradaAuditoria[]);

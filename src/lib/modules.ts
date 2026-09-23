@@ -10,6 +10,7 @@ import {
   ReceiptEuro,
   Banknote,
   Calculator,
+  History,
   LifeBuoy,
   type LucideIcon,
 } from "lucide-react";
@@ -38,6 +39,7 @@ export const modulos: ModuloDef[] = [
   { id: "permisos", nombre: "Roles y permisos", icono: ShieldCheck, ruta: "/permisos", grupo: "Plataforma", disponible: true },
   { id: "consumo", nombre: "Gestión del uso", icono: Activity, ruta: "/consumo", grupo: "Plataforma", disponible: true },
   { id: "notificaciones", nombre: "Notificaciones", icono: Bell, ruta: "/notificaciones", grupo: "Plataforma", disponible: true },
+  { id: "auditoria", nombre: "Auditoría", icono: History, ruta: "/auditoria", grupo: "Plataforma", disponible: true },
   { id: "facturacion", nombre: "Facturación", icono: ReceiptEuro, grupo: "Finanzas", disponible: false },
   { id: "cobros", nombre: "Cobros", icono: Banknote, grupo: "Finanzas", disponible: false },
   { id: "financiero", nombre: "Financiero (ERP)", icono: Calculator, grupo: "Finanzas", disponible: false },

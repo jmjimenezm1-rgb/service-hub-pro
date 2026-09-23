@@ -149,6 +149,39 @@ export type Database = {
         }
         Relationships: []
       }
+      auditoria: {
+        Row: {
+          actor: string | null
+          created_at: string
+          datos_antes: Json | null
+          datos_despues: Json | null
+          id: number
+          operacion: string
+          registro_id: string
+          tabla: string
+        }
+        Insert: {
+          actor?: string | null
+          created_at?: string
+          datos_antes?: Json | null
+          datos_despues?: Json | null
+          id?: number
+          operacion: string
+          registro_id: string
+          tabla: string
+        }
+        Update: {
+          actor?: string | null
+          created_at?: string
+          datos_antes?: Json | null
+          datos_despues?: Json | null
+          id?: number
+          operacion?: string
+          registro_id?: string
+          tabla?: string
+        }
+        Relationships: []
+      }
       cliente_historial: {
         Row: {
           autor: string
