@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AplicacionesRouteImport } from './routes/aplicaciones'
+import { Route as AuditoriaRouteImport } from './routes/auditoria'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ConsumoRouteImport } from './routes/consumo'
 import { Route as NotificacionesRouteImport } from './routes/notificaciones'
@@ -28,6 +29,11 @@ const IndexRoute = IndexRouteImport.update({
 const AplicacionesRoute = AplicacionesRouteImport.update({
   id: '/aplicaciones',
   path: '/aplicaciones',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuditoriaRoute = AuditoriaRouteImport.update({
+  id: '/auditoria',
+  path: '/auditoria',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -74,6 +80,7 @@ const CrmClienteIdRoute = CrmClienteIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aplicaciones': typeof AplicacionesRoute
+  '/auditoria': typeof AuditoriaRoute
   '/auth': typeof AuthRoute
   '/consumo': typeof ConsumoRoute
   '/notificaciones': typeof NotificacionesRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aplicaciones': typeof AplicacionesRoute
+  '/auditoria': typeof AuditoriaRoute
   '/auth': typeof AuthRoute
   '/consumo': typeof ConsumoRoute
   '/notificaciones': typeof NotificacionesRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/aplicaciones': typeof AplicacionesRoute
+  '/auditoria': typeof AuditoriaRoute
   '/auth': typeof AuthRoute
   '/consumo': typeof ConsumoRoute
   '/notificaciones': typeof NotificacionesRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/aplicaciones'
+    | '/auditoria'
     | '/auth'
     | '/consumo'
     | '/notificaciones'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/aplicaciones'
+    | '/auditoria'
     | '/auth'
     | '/consumo'
     | '/notificaciones'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/aplicaciones'
+    | '/auditoria'
     | '/auth'
     | '/consumo'
     | '/notificaciones'
@@ -150,6 +162,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AplicacionesRoute: typeof AplicacionesRoute
+  AuditoriaRoute: typeof AuditoriaRoute
   AuthRoute: typeof AuthRoute
   ConsumoRoute: typeof ConsumoRoute
   NotificacionesRoute: typeof NotificacionesRoute
@@ -174,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/aplicaciones'
       fullPath: '/aplicaciones'
       preLoaderRoute: typeof AplicacionesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auditoria': {
+      id: '/auditoria'
+      path: '/auditoria'
+      fullPath: '/auditoria'
+      preLoaderRoute: typeof AuditoriaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -238,6 +258,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AplicacionesRoute: AplicacionesRoute,
+  AuditoriaRoute: AuditoriaRoute,
   AuthRoute: AuthRoute,
   ConsumoRoute: ConsumoRoute,
   NotificacionesRoute: NotificacionesRoute,
