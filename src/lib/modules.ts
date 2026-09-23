@@ -10,6 +10,7 @@ import {
   ReceiptEuro,
   Banknote,
   Calculator,
+  History,
   LifeBuoy,
   type LucideIcon,
 } from "lucide-react";
