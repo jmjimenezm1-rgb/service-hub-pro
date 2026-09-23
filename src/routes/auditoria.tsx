@@ -96,15 +96,28 @@ function AuditoriaPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard titulo="Movimientos registrados" valor={String(kpis.total)} icono={History} />
-        <StatCard titulo="Altas" valor={String(kpis.altas)} icono={History} tono="success" />
+        <StatCard label="Movimientos" value={kpis.total} icon={History} hint="últimos 500" />
         <StatCard
-          titulo="Modificaciones"
-          valor={String(kpis.modificaciones)}
-          icono={History}
-          tono="info"
+          label="Altas"
+          value={kpis.altas}
+          icon={History}
+          to="/auditoria"
+          search={{ operacion: "alta" }}
         />
-        <StatCard titulo="Bajas" valor={String(kpis.bajas)} icono={History} tono="danger" />
+        <StatCard
+          label="Modificaciones"
+          value={kpis.modificaciones}
+          icon={History}
+          to="/auditoria"
+          search={{ operacion: "modificacion" }}
+        />
+        <StatCard
+          label="Bajas"
+          value={kpis.bajas}
+          icon={History}
+          to="/auditoria"
+          search={{ operacion: "baja" }}
+        />
       </div>
 
       <DataTable
