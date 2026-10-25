@@ -51,6 +51,8 @@ export const Route = createFileRoute("/crm/$clienteId")({
       },
       { property: "og:title", content: "Ficha de cliente · ServiceHub" },
       { property: "og:description", content: "Toda la relación con la empresa cliente en una sola pantalla." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: FichaClientePage,
@@ -134,9 +136,9 @@ function FichaClientePage() {
       />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="MRR" value={eur(cliente.mrr)} icon={Building2} />
-        <StatCard label="Suscripciones" value={suscripciones.length} icon={Repeat} />
-        <StatCard label="Usuarios" value={usuarios.length} icon={Users} />
+        <StatCard label="MRR" value={eur(cliente.mrr)} icon={Building2} to="/suscripciones" search={{ cliente: String(id), estado: "activa" }} />
+        <StatCard label="Suscripciones" value={suscripciones.length} icon={Repeat} to="/suscripciones" search={{ cliente: String(id), estado: "todos" }} />
+        <StatCard label="Usuarios" value={usuarios.length} icon={Users} to="/usuarios" search={{ cliente: String(id), estado: "todos" }} />
         <StatCard label="Acciones planificadas" value={pendientes} hint="en agenda" />
       </section>
 

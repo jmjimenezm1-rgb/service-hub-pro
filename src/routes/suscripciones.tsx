@@ -24,6 +24,8 @@ export const Route = createFileRoute("/suscripciones")({
       },
       { property: "og:title", content: "Suscripciones · ServiceHub" },
       { property: "og:description", content: "Controla contratos, consumo y renovaciones automáticas." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: SuscripcionesPage,
@@ -119,7 +121,8 @@ function SuscripcionesPage() {
         <StatCard label="Ingreso contratado" value={eur(ingresos)} hint="neto de descuentos" to="/suscripciones" search={{ estado: "activa" }} />
         <StatCard
           label="Renovación automática"
-          value={`${Math.round((suscripciones.filter((s) => s.renovacionAutomatica).length / suscripciones.length) * 100)}%`}
+          value={`${suscripciones.length ? Math.round((suscripciones.filter((s) => s.renovacionAutomatica).length / suscripciones.length) * 100) : 0}%`}
+          to="/suscripciones" search={{ renovacion: "automática" }}
         />
       </section>
 
@@ -128,6 +131,7 @@ function SuscripcionesPage() {
       <DataTable
         data={suscripciones}
         columnas={columnas}
+        exportacion={{ nombre: "suscripciones", cabeceras: ["ID", "Cliente", "Aplicación", "Estado", "Inicio", "Renovación", "Periodicidad", "Precio", "Descuento"], fila: (s) => [s.id, getCliente(s.clienteId)?.nombreComercial, getAplicacion(s.aplicacionId)?.nombre, s.estado, s.fechaInicio, s.fechaRenovacion, s.periodicidad, s.precio, s.descuento] }}
         porPagina={10}
         onRowClick={abrirForm}
         buscar={(s) =>
@@ -140,6 +144,7 @@ function SuscripcionesPage() {
           },
         ]}
         filtros={[
+          { label: "Renovación", param: "renovacion", opciones: ["automática", "manual"], match: (s, v) => s.renovacionAutomatica === (v === "automática") },
           { label: "Estado", param: "estado", opciones: ["activa", "prueba", "suspendida", "cancelada"], match: (s, v) => s.estado === v },
           {
             label: "Periodicidad",
@@ -157,7 +162,7 @@ function SuscripcionesPage() {
         titulo={editando ? `Editar suscripción #${editando.id}` : "Nueva suscripción"}
         descripcion="Contrato de una aplicación para un cliente: fechas, modalidad, consumo y precio."
         campos={camposSuscripcion(clientes, aplicaciones)}
-        valoresIniciales={filaSuscripcion(editando)}
+        valoresIniciales={{ ...filaSuscripcion(editando), cliente_id: editando?.clienteId ?? clienteFiltro ?? "" }}
         guardando={guardar.isPending}
         onSubmit={(valores) =>
           guardar.mutate(

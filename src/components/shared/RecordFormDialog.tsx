@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -39,6 +40,8 @@ export type Campo = {
   numerico?: boolean;
   ancho?: "full";
   placeholder?: string;
+  min?: number;
+  max?: number;
   /** Agrupa campos bajo un encabezado dentro del formulario. */
   seccion?: string;
 };
@@ -82,6 +85,10 @@ export function RecordFormDialog({
     const limpio: Record<string, any> = {};
     for (const c of campos) {
       const v = valores[c.name];
+      if (c.requerido && (v == null || String(v).trim() === "")) {
+        toast.error(`Completa el campo ${c.label}`);
+        return;
+      }
       limpio[c.name] =
         c.tipo === "multiselect"
           ? (Array.isArray(v) ? v : []).map((x) => (c.numerico ? Number(x) : x))
@@ -177,15 +184,15 @@ export function RecordFormDialog({
                         </div>
                       ) : c.tipo === "select" ? (
                         <Select
-                          value={String(valores[c.name] ?? "")}
-                          onValueChange={(v) => set(c.name, v)}
+                          value={String(valores[c.name] ?? "") || "__sin_valor__"}
+                          onValueChange={(v) => set(c.name, v === "__sin_valor__" ? "" : v)}
                         >
                           <SelectTrigger id={c.name}>
                             <SelectValue placeholder={c.placeholder ?? "Selecciona…"} />
                           </SelectTrigger>
                           <SelectContent>
                             {(c.opciones ?? []).map((o) => (
-                              <SelectItem key={o.value} value={o.value}>
+                              <SelectItem key={o.value} value={o.value || "__sin_valor__"}>
                                 {o.label}
                               </SelectItem>
                             ))}
@@ -220,6 +227,8 @@ export function RecordFormDialog({
                           }
                           step={c.tipo === "numero" ? "any" : undefined}
                           required={c.requerido}
+                          min={c.min}
+                          max={c.max}
                           placeholder={c.placeholder ?? ""}
                           value={valores[c.name] ?? ""}
                           onChange={(e) => set(c.name, e.target.value)}
