@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useRouterState } from "@tanstack/react-router";
-import { Search, ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, SlidersHorizontal, Download } from "lucide-react";
+import { descargarCsv, type CsvValue } from "@/lib/csv";
 
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -61,6 +62,7 @@ export function DataTable<T extends { id: number }>({
   onRowClick,
   porPagina = 8,
   vacio = "Sin resultados",
+  exportacion,
 }: {
   data: T[];
   columnas: Columna<T>[];
@@ -70,6 +72,7 @@ export function DataTable<T extends { id: number }>({
   onRowClick?: (row: T) => void;
   porPagina?: number;
   vacio?: string;
+  exportacion?: { nombre: string; cabeceras: string[]; fila: (row: T) => CsvValue[] };
 }) {
   const busqueda = useRouterState({ select: (s) => s.location.search }) as unknown as Record<
     string,
@@ -184,6 +187,12 @@ export function DataTable<T extends { id: number }>({
             ))}
           </div>
         )}
+        {exportacion && (
+          <Button variant="outline" disabled={!filtrados.length}
+            onClick={() => descargarCsv(exportacion.nombre, exportacion.cabeceras, filtrados.map(exportacion.fila))}>
+            <Download className="size-4" /> Exportar CSV
+          </Button>
+        )}
       </div>
 
       {checks.length > 0 && (
@@ -220,6 +229,13 @@ export function DataTable<T extends { id: number }>({
                 key={row.id}
                 onClick={() => onRowClick?.(row)}
                 className={cn(onRowClick && "cursor-pointer")}
+                tabIndex={onRowClick ? 0 : undefined}
+                onKeyDown={(e) => {
+                  if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+                    e.preventDefault();
+                    onRowClick?.(row);
+                  }
+                }}
               >
                 {columnas.map((c) => (
                   <TableCell key={c.key} className={cn("whitespace-nowrap", c.className)}>

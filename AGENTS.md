@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Module tables use the shared DataTable export configuration so CSV downloads follow the current filters across all pages.
+- Optional form selectors map empty values to a UI sentinel and restore the empty value on submission because the select control rejects empty option values.
