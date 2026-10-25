@@ -22,6 +22,8 @@ export const Route = createFileRoute("/crm/")({
       },
       { property: "og:title", content: "CRM de clientes · ServiceHub" },
       { property: "og:description", content: "Gestiona el ciclo de vida completo de las empresas cliente." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: CrmPage,
@@ -84,6 +86,7 @@ function CrmPage() {
       <DataTable
         data={clientes}
         columnas={columnas}
+        exportacion={{ nombre: "clientes", cabeceras: ["Cliente", "Razón social", "NIF", "Email", "Teléfono", "Estado", "MRR"], fila: (c) => [c.nombreComercial, c.razonSocial, c.nif, c.email, c.telefono, c.estado, c.mrr] }}
         onRowClick={(c) => navigate({ to: "/crm/$clienteId", params: { clienteId: String(c.id) } })}
         checks={[
           {

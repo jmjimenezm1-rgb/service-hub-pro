@@ -96,7 +96,7 @@ function AuditoriaPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Movimientos" value={kpis.total} icon={History} hint="últimos 500" />
+        <StatCard label="Movimientos" value={kpis.total} icon={History} hint="últimos 500" to="/auditoria" search={{ operacion: "todos" }} />
         <StatCard
           label="Altas"
           value={kpis.altas}
@@ -122,6 +122,7 @@ function AuditoriaPage() {
 
       <DataTable
         data={entradas}
+        exportacion={{ nombre: "auditoria", cabeceras: ["Fecha", "Módulo", "Registro", "Operación", "Autor"], fila: (e) => [e.created_at, nombresTabla[e.tabla] ?? e.tabla, e.registroId, e.operacion, e.actor] }}
         onRowClick={setSeleccion}
         porPagina={12}
         vacio="Todavía no hay movimientos registrados."

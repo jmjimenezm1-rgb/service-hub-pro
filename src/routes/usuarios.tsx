@@ -25,6 +25,8 @@ export const Route = createFileRoute("/usuarios")({
       },
       { property: "og:title", content: "Usuarios · ServiceHub" },
       { property: "og:description", content: "Administra usuarios, roles, MFA y aplicaciones autorizadas." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: UsuariosPage,
@@ -114,6 +116,7 @@ function UsuariosPage() {
       header: "Activar",
       render: (u) => (
         <Switch
+          onClick={(e) => e.stopPropagation()}
           checked={u.estado === "activo"}
           aria-label={`Activar ${u.email}`}
           onCheckedChange={(v) =>
@@ -139,8 +142,8 @@ function UsuariosPage() {
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Usuarios totales" value={usuarios.length} icon={Users} to="/usuarios" search={{ estado: "todos" }} />
         <StatCard label="Activos" value={usuarios.filter((u) => u.estado === "activo").length} to="/usuarios" search={{ estado: "activo" }} />
-        <StatCard label="Con MFA" value={`${Math.round((usuarios.filter((u) => u.mfa).length / usuarios.length) * 100)}%`} icon={ShieldCheck} />
-        <StatCard label="Bloqueados / inactivos" value={usuarios.filter((u) => u.estado !== "activo").length} to="/usuarios" search={{ estado: "inactivo" }} />
+        <StatCard label="Con MFA" value={`${usuarios.length ? Math.round((usuarios.filter((u) => u.mfa).length / usuarios.length) * 100) : 0}%`} icon={ShieldCheck} to="/usuarios" search={{ mfa: "activo" }} />
+        <StatCard label="Bloqueados / inactivos" value={usuarios.filter((u) => u.estado !== "activo").length} to="/usuarios" search={{ estado: "bloqueados / inactivos" }} />
       </section>
 
       <FiltroClienteAviso />
@@ -148,6 +151,7 @@ function UsuariosPage() {
       <DataTable
         data={usuarios}
         columnas={columnas}
+        exportacion={{ nombre: "usuarios", cabeceras: ["Nombre", "Apellidos", "Email", "Empresa", "Rol", "Estado", "MFA"], fila: (u) => [u.nombre, u.apellidos, u.email, getCliente(u.clienteId ?? 0)?.nombreComercial ?? "ServiceHub", u.rol, u.estado, u.mfa] }}
         porPagina={10}
         onRowClick={abrirForm}
         buscar={(u) => `${u.nombre} ${u.apellidos} ${u.email} ${u.cargo} ${u.rol}`}
@@ -158,7 +162,8 @@ function UsuariosPage() {
           },
         ]}
         filtros={[
-          { label: "Estado", param: "estado", opciones: ["activo", "inactivo", "bloqueado"], match: (u, v) => u.estado === v },
+          { label: "Estado", param: "estado", opciones: ["activo", "inactivo", "bloqueado", "bloqueados / inactivos"], match: (u, v) => v === "bloqueados / inactivos" ? u.estado !== "activo" : u.estado === v },
+          { label: "MFA", param: "mfa", opciones: ["activo", "sin MFA"], match: (u, v) => u.mfa === (v === "activo") },
           {
             label: "Rol",
             param: "rol",
@@ -184,7 +189,7 @@ function UsuariosPage() {
         titulo={editando ? `Editar ${editando.nombre} ${editando.apellidos}` : "Nuevo usuario"}
         descripcion="Datos del usuario, empresa asociada, rol RBAC, seguridad y aplicaciones autorizadas."
         campos={camposUsuario(clientes, aplicaciones, roles)}
-        valoresIniciales={filaUsuario(editando)}
+        valoresIniciales={{ ...filaUsuario(editando), cliente_id: editando ? editando.clienteId ?? "" : clienteFiltro ?? "" }}
         guardando={guardar.isPending}
         onSubmit={(valores) =>
           guardar.mutate(

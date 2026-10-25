@@ -44,6 +44,8 @@ export const Route = createFileRoute("/permisos")({
         property: "og:description",
         content: "Control de acceso basado en roles editable para cada módulo del sistema.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: PermisosPage,

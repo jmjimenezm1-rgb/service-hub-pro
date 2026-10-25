@@ -22,6 +22,8 @@ export const Route = createFileRoute("/aplicaciones")({
       },
       { property: "og:title", content: "Catálogo de aplicaciones · ServiceHub" },
       { property: "og:description", content: "Gestiona el catálogo SaaS, precios y modelos de cobro por uso." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AplicacionesPage,

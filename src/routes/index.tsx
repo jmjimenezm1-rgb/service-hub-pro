@@ -54,6 +54,8 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Indicadores en tiempo real del negocio SaaS: MRR, ARR, cobros, consumo y renovaciones.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Dashboard,
@@ -100,7 +102,7 @@ function Dashboard() {
         <StatCard label="Facturación mensual" value={eur(64100)} icon={ReceiptEuro} delta={3} hint="agosto" to="/suscripciones" search={{ periodicidad: "mensual" }} />
         <StatCard label="Facturación anual" value={eur(630830)} icon={ReceiptEuro} delta={21} hint="acumulado 12 m" to="/suscripciones" search={{ periodicidad: "anual" }} />
         <StatCard label="Cobros pendientes" value={eur(15870)} icon={AlertTriangle} delta={-6} hint={`${impagos} cliente(s) en impago`} to="/crm" search={{ estado: "impago" }} />
-        <StatCard label="Usuarios activos" value={num(1512)} icon={Activity} delta={6} hint="412 conectados hoy" to="/usuarios" search={{ estado: "activo" }} />
+        <StatCard label="Usuarios activos" value={num(usuarios.filter((u) => u.estado === "activo").length)} icon={Activity} to="/usuarios" search={{ estado: "activo" }} />
       </section>
 
 
@@ -246,7 +248,7 @@ function Dashboard() {
               <p className="text-sm font-medium">{a.nombre}</p>
               <p className="mt-1 text-lg font-semibold tabular-nums">{eur(a.consumo)}</p>
               <p className="text-xs text-muted-foreground">
-                {a.suscripciones} suscripción(es) · {usuarios.filter((u) => u.aplicaciones.includes(aplicaciones.find((ap) => ap.nombre === a.nombre)!.id)).length} usuarios
+                {a.suscripciones} suscripción(es) · {usuarios.filter((u) => { const app = aplicaciones.find((ap) => ap.nombre === a.nombre); return app ? u.aplicaciones.includes(app.id) : false; }).length} usuarios
               </p>
             </Link>
           ))}
