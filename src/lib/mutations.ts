@@ -21,6 +21,7 @@ export function useGuardarRegistro(tabla: string, queryKey: string, etiqueta: st
     },
     onSuccess: (_d, vars) => {
       qc.invalidateQueries({ queryKey: [queryKey] });
+      qc.invalidateQueries({ queryKey: ["auditoria"] });
       toast.success(vars.id ? `${etiqueta} actualizado` : `${etiqueta} creado`);
     },
     onError: (e: Error) =>
@@ -50,6 +51,7 @@ export function useEliminarRegistro(
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: [queryKey] });
+      qc.invalidateQueries({ queryKey: ["auditoria"] });
       toast.success(`${etiqueta} dado de baja`);
     },
     onError: (e: Error) =>

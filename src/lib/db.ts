@@ -152,7 +152,9 @@ const aNotificacion = (r: Row): Notificacion => ({
 });
 
 async function listar<T>(tabla: string, orden: string, mapper: (r: Row) => T): Promise<T[]> {
-  const { data, error } = await supabase.from(tabla as never).select("*").order(orden);
+  const consulta = supabase.from(tabla as never).select("*").order(orden);
+  const conBajaLogica = ["clientes", "aplicaciones", "suscripciones", "usuarios", "notificaciones", "plantillas_notificacion", "agenda_cliente"].includes(tabla);
+  const { data, error } = await (conBajaLogica ? consulta.is("deleted_at", null) : consulta);
   if (error) throw new Error(error.message);
   return (data ?? []).map(mapper as never) as T[];
 }

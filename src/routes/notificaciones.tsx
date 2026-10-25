@@ -113,7 +113,7 @@ function NotificacionesPage() {
   /** Cambio de estado en lote sobre las notificaciones visibles. */
   const marcarTodo = useMutation({
     mutationFn: async () => {
-      const ids = notificaciones.filter((n) => n.estado !== "leida").map((n) => n.id);
+      const ids = notificaciones.filter((n) => n.canal === "interna" && n.estado === "enviada").map((n) => n.id);
       if (!ids.length) return 0;
       const { error } = await supabase
         .from("notificaciones")
@@ -124,6 +124,7 @@ function NotificacionesPage() {
     },
     onSuccess: (n) => {
       qc.invalidateQueries({ queryKey: ["notificaciones"] });
+      qc.invalidateQueries({ queryKey: ["auditoria"] });
       toast.success(n ? `${n} notificaciones marcadas como leídas` : "No había avisos sin leer");
     },
     onError: (e: Error) =>
@@ -205,7 +206,7 @@ function NotificacionesPage() {
         acciones={
           <>
             <Button variant="outline" onClick={() => marcarTodo.mutate()} disabled={marcarTodo.isPending}>
-              <CheckCheck className="size-4" /> Marcar todo como leído
+              <CheckCheck className="size-4" /> Leer avisos internos
             </Button>
             <Button onClick={abrirNueva}>
               <Send className="size-4" /> Nueva notificación
@@ -215,7 +216,7 @@ function NotificacionesPage() {
       />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Notificaciones (30 d)" value={notificaciones.length} icon={Bell} to="/notificaciones" search={{ estado: "todos" }} />
+        <StatCard label="Notificaciones" value={notificaciones.length} icon={Bell} to="/notificaciones" search={{ estado: "todos" }} />
         <StatCard label="Enviadas" value={enviadas} hint="entregadas correctamente" to="/notificaciones" search={{ estado: "enviada" }} />
         <StatCard label="Pendientes de envío" value={pendientes} hint="en cola" to="/notificaciones" search={{ estado: "pendiente" }} />
         <StatCard label="Fallidas" value={fallidas} icon={AlertTriangle} hint="requieren revisión" to="/notificaciones" search={{ estado: "fallida" }} />
@@ -226,6 +227,7 @@ function NotificacionesPage() {
       <DataTable
         data={notificaciones}
         columnas={columnas}
+        exportacion={{ nombre: "notificaciones", cabeceras: ["Asunto", "Cliente", "Destinatario", "Canal", "Categoría", "Estado", "Fecha"], fila: (n) => [n.asunto, getCliente(n.clienteId ?? 0)?.nombreComercial ?? "Plataforma", n.destinatario, n.canal, n.categoria, n.estado, n.enviadaEn] }}
         porPagina={8}
         onRowClick={setSeleccion}
         buscar={(n) => `${n.asunto} ${n.mensaje} ${n.destinatario} ${n.categoria}`}
@@ -320,9 +322,9 @@ function NotificacionesPage() {
         open={formAbierto}
         onOpenChange={setFormAbierto}
         titulo={editando ? "Editar notificación" : "Nueva notificación"}
-        descripcion="Envío manual a través del centro de notificaciones."
+        descripcion="Registro de avisos. Los canales externos todavía no tienen un servicio de envío conectado."
         campos={camposNotificacionCon(clientes, aplicaciones, plantillas)}
-        valoresIniciales={filaNotificacion(editando)}
+        valoresIniciales={{ ...filaNotificacion(editando), cliente_id: editando?.clienteId ?? clienteFiltro ?? "" }}
         guardando={guardar.isPending}
         onSubmit={(valores) =>
           guardar.mutate(
@@ -430,14 +432,14 @@ function NotificacionesPage() {
                     variant="outline"
                     size="sm"
                     disabled={guardar.isPending}
-                    onClick={() => cambiarEstado(seleccion, "enviada")}
+                    onClick={() => cambiarEstado(seleccion, "pendiente")}
                   >
-                    <Send className="size-4" /> Reenviar
+                    <Send className="size-4" /> Volver a pendiente
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    disabled={guardar.isPending || seleccion.estado === "leida"}
+                    disabled={guardar.isPending || seleccion.canal !== "interna" || seleccion.estado !== "enviada"}
                     onClick={() => cambiarEstado(seleccion, "leida")}
                   >
                     <CheckCheck className="size-4" /> Marcar como leída
