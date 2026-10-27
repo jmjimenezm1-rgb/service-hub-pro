@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { Search, ChevronLeft, ChevronRight, SlidersHorizontal, Download } from "lucide-react";
 import { descargarCsv, type CsvValue } from "@/lib/csv";
+import { sincronizarChecks, sincronizarFiltros } from "@/lib/table-url-filters";
 
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -104,23 +105,8 @@ export function DataTable<T extends { id: number }>({
   // Al llegar desde un cuadro de indicadores, la URL trae el filtro a aplicar.
   const urlKey = JSON.stringify(busqueda ?? {});
   useEffect(() => {
-    setValores((prev) => {
-      const next = { ...prev };
-      for (const f of filtros) {
-        const v = leer(f.param);
-        if (v !== undefined && v !== "") next[f.label] = String(v);
-      }
-      return next;
-    });
-    setMarcados((prev) => {
-      const next = { ...prev };
-      for (const c of checks) {
-        const v = leer(c.param);
-        if (v !== undefined && v !== "" && (c.paramValor === undefined || c.paramValor === String(v)))
-          next[c.label] = false;
-      }
-      return next;
-    });
+    setValores((prev) => sincronizarFiltros(prev, filtros, busqueda ?? {}));
+    setMarcados((prev) => sincronizarChecks(prev, checks, busqueda ?? {}));
     setPagina(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlKey]);

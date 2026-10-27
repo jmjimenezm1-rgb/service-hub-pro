@@ -1,5 +1,7 @@
 # ServiceHub: funciones pendientes
 
-- [ ] Revisar los módulos construidos y priorizar funciones incompletas.
-- [ ] Completar acciones reales de consulta, filtrado y exportación identificadas en la revisión.
-- [ ] Verificar los cambios con datos reales y registrar los siguientes pendientes por módulo.
+- [ ] Completar exportación y búsqueda en la matriz de permisos.
+- [ ] Corregir filtros que permanecen aplicados al volver o quitar parámetros de la dirección.
+- [ ] Revisar metadatos de todas las páginas existentes.
+- [ ] Verificar CSV filtrado, alta y edición de consumo, notificaciones y auditoría con sesión y datos reales.
+- [ ] Registrar los siguientes pendientes concretos por módulo.

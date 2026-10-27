@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { DataTable, type Columna } from "@/components/shared/DataTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -130,6 +131,28 @@ function PermisosPage() {
   };
 
   const bloqueado = aBorrar ? usuariosDe(aBorrar.nombre) : [];
+  const columnas: Columna<Rol>[] = [
+    { key: "rol", header: "Rol", className: "sticky left-0 bg-card", render: (r) => <span className="font-medium">{r.nombre}</span> },
+    ...modulosPermisos.map((modulo): Columna<Rol> => ({
+      key: modulo,
+      header: modulo,
+      render: (r) => {
+        const nivel = nivelDe(r.id, modulo);
+        return (
+          <Select value={nivel} disabled={cambiarPermiso.isPending}
+            onValueChange={(v) => cambiarPermiso.mutate({ rolId: r.id, modulo, nivel: v })}>
+            <SelectTrigger aria-label={`Permiso de ${r.nombre} en ${modulo}`}
+              className={cn("h-8 w-[130px] capitalize", estilos[nivel])}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {niveles.map((n) => <SelectItem key={n} value={n} className="capitalize">{n}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        );
+      },
+    })),
+  ];
 
   return (
     <>
@@ -180,57 +203,10 @@ function PermisosPage() {
         ))}
       </div>
 
-      <div className="surface overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border">
-              <th className="sticky left-0 bg-card p-3 text-left font-medium">Rol</th>
-              {modulosPermisos.map((m) => (
-                <th
-                  key={m}
-                  className="whitespace-nowrap p-3 text-left font-medium text-muted-foreground"
-                >
-                  {m}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {roles.map((r) => (
-              <tr key={r.id} className="border-b border-border last:border-0">
-                <td className="sticky left-0 bg-card p-3 font-medium">{r.nombre}</td>
-                {modulosPermisos.map((m) => {
-                  const nivel = nivelDe(r.id, m);
-                  return (
-                    <td key={m} className="p-2">
-                      <Select
-                        value={nivel}
-                        onValueChange={(v) =>
-                          cambiarPermiso.mutate({ rolId: r.id, modulo: m, nivel: v })
-                        }
-                      >
-                        <SelectTrigger
-                          aria-label={`Permiso de ${r.nombre} en ${m}`}
-                          className={cn("h-8 w-[130px] capitalize", estilos[nivel])}
-                        >
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {niveles.map((n) => (
-                            <SelectItem key={n} value={n} className="capitalize">
-                              {n}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable data={roles} columnas={columnas} buscar={(r) => `${r.nombre} ${r.descripcion}`}
+        porPagina={10}
+        exportacion={{ nombre: "roles-permisos", cabeceras: ["Rol", "Descripción", ...modulosPermisos],
+          fila: (r) => [r.nombre, r.descripcion, ...modulosPermisos.map((m) => nivelDe(r.id, m))] }} />
 
       <p className="text-xs text-muted-foreground">
         Cada módulo declara sus propios permisos, de forma que añadir un módulo nuevo no obliga a
