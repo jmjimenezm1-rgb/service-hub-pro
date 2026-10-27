@@ -411,6 +411,7 @@ export type Database = {
           categoria: string
           cliente_id: number | null
           created_at: string
+          deleted_at: string | null
           destinatario: string
           enviada_en: string
           estado: string
@@ -426,6 +427,7 @@ export type Database = {
           categoria?: string
           cliente_id?: number | null
           created_at?: string
+          deleted_at?: string | null
           destinatario?: string
           enviada_en?: string
           estado?: string
@@ -441,6 +443,7 @@ export type Database = {
           categoria?: string
           cliente_id?: number | null
           created_at?: string
+          deleted_at?: string | null
           destinatario?: string
           enviada_en?: string
           estado?: string
