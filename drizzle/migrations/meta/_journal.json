@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1793139676714,
+      "tag": "0000_fix_audit_updates_without_soft_delete",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793139803320,
+      "tag": "0001_add_notification_soft_delete",
+      "breakpoints": true
+    }
+  ]
+}
