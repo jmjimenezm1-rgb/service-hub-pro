@@ -105,6 +105,8 @@ export type Database = {
           unidad_uso: string
           updated_at: string
           url: string
+          url_api: string
+          url_manual: string
           version: string
         }
         Insert: {
@@ -125,6 +127,8 @@ export type Database = {
           unidad_uso?: string
           updated_at?: string
           url?: string
+          url_api?: string
+          url_manual?: string
           version?: string
         }
         Update: {
@@ -145,6 +149,8 @@ export type Database = {
           unidad_uso?: string
           updated_at?: string
           url?: string
+          url_api?: string
+          url_manual?: string
           version?: string
         }
         Relationships: []

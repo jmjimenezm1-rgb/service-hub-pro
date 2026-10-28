@@ -15,6 +15,13 @@
       "when": 1793139803320,
       "tag": "0001_add_notification_soft_delete",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793173784752,
+      "tag": "0002_aplicaciones_docs",
+      "breakpoints": true
     }
   ]
 }
