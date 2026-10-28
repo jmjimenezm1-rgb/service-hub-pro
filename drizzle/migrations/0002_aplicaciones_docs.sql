@@ -1,0 +1,1 @@
+ALTER TABLE public.aplicaciones ADD COLUMN IF NOT EXISTS url_manual text NOT NULL DEFAULT '', ADD COLUMN IF NOT EXISTS url_api text NOT NULL DEFAULT '';

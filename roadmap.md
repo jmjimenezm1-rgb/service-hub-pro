@@ -7,6 +7,6 @@
 - [x] Corregir auditoría de tablas sin baja lógica y añadir la columna de baja lógica que faltaba en notificaciones.
 
 ## Siguiente trabajo identificado (fuera de este lote)
-- Aplicaciones: conectar Manual y API cuando se definan sus destinos de documentación.
+- [x] Aplicaciones: enlaces Manual y API por aplicación.
 - Aplicaciones: conservar y sincronizar la exclusión de retiradas al navegar.
-- Notificaciones: conectar servicios externos de entrega; requiere seleccionar y autorizar el servicio de envío.
+- Notificaciones: envío por email — bloqueado hasta que el usuario tenga un dominio propio.

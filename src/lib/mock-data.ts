@@ -256,6 +256,8 @@ export type ModeloCobro = "fijo" | "por_usuario" | "por_uso" | "hibrido";
 
 export interface Aplicacion extends BaseEntity {
   nombre: string;
+  urlManual?: string;
+  urlApi?: string;
   descripcion: string;
   version: string;
   estado: "publicada" | "beta" | "mantenimiento" | "retirada";
