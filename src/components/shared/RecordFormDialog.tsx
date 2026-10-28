@@ -117,7 +117,7 @@ export function RecordFormDialog({
           {descripcion ? <DialogDescription>{descripcion}</DialogDescription> : null}
         </DialogHeader>
         <form onSubmit={enviar} className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {campos.map((c) => {
               const nuevaSeccion = c.seccion && c.seccion !== seccionActual ? c.seccion : null;
               if (c.seccion) seccionActual = c.seccion;
@@ -126,8 +126,8 @@ export function RecordFormDialog({
                   key={c.name}
                   className={
                     c.ancho === "full" || c.tipo === "textarea" || c.tipo === "multiselect"
-                      ? "sm:col-span-2"
-                      : undefined
+                      ? "min-w-0 sm:col-span-2"
+                      : "min-w-0"
                   }
                   style={nuevaSeccion ? { gridColumn: "1 / -1" } : undefined}
                 >
@@ -152,7 +152,7 @@ export function RecordFormDialog({
                     </Label>
                     <div className="mt-1.5">
                       {c.tipo === "multiselect" ? (
-                        <div className="grid gap-2 rounded-lg border border-border p-3 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-2 rounded-lg border border-border p-3 sm:grid-cols-2">
                           {(c.opciones ?? []).map((o) => {
                             const lista: string[] = (
                               Array.isArray(valores[c.name]) ? valores[c.name] : []
