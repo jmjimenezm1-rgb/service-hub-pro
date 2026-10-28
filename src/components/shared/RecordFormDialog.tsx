@@ -111,13 +111,13 @@ export function RecordFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
+      <DialogContent className="max-h-[85vh] w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] overflow-x-hidden overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{titulo}</DialogTitle>
           {descripcion ? <DialogDescription>{descripcion}</DialogDescription> : null}
         </DialogHeader>
-        <form onSubmit={enviar} className="space-y-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <form onSubmit={enviar} className="min-w-0 space-y-4">
+          <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2">
             {campos.map((c) => {
               const nuevaSeccion = c.seccion && c.seccion !== seccionActual ? c.seccion : null;
               if (c.seccion) seccionActual = c.seccion;
@@ -226,6 +226,7 @@ export function RecordFormDialog({
                                   : "text"
                           }
                           step={c.tipo === "numero" ? "any" : undefined}
+                          className={c.tipo === "fecha" ? "block w-full min-w-0 max-w-full appearance-none" : undefined}
                           required={c.requerido}
                           min={c.min}
                           max={c.max}
