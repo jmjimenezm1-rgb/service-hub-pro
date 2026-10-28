@@ -156,3 +156,7 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-elev);
 }
+
+/* iOS Safari: los inputs de fecha tienen un ancho intrínseco que desborda */
+input[type="date"] { min-width: 0; max-width: 100%; -webkit-appearance: none; appearance: none; }
+input[type="date"]::-webkit-date-and-time-value { text-align: left; min-width: 0; }
