@@ -86,6 +86,8 @@ const aAplicacion = (r: Row): Aplicacion => ({
   unidadUso: r.unidad_uso,
   limites: r.limites,
   logo: r.logo,
+  urlManual: r.url_manual ?? "",
+  urlApi: r.url_api ?? "",
 });
 
 const aSuscripcion = (r: Row): Suscripcion => ({

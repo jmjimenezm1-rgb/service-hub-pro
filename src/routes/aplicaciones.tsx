@@ -127,12 +127,28 @@ function AplicacionesPage() {
                     <ExternalLink className="size-3.5" /> Abrir
                   </a>
                 </Button>
-                <Button variant="ghost" size="sm">
-                  <BookOpen className="size-3.5" /> Manual
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <Code2 className="size-3.5" /> API
-                </Button>
+                {a.urlManual ? (
+                  <Button variant="ghost" size="sm" asChild>
+                    <a href={a.urlManual} target="_blank" rel="noreferrer">
+                      <BookOpen className="size-3.5" /> Manual
+                    </a>
+                  </Button>
+                ) : (
+                  <Button variant="ghost" size="sm" disabled title="Añade el enlace editando la aplicación">
+                    <BookOpen className="size-3.5" /> Manual
+                  </Button>
+                )}
+                {a.urlApi ? (
+                  <Button variant="ghost" size="sm" asChild>
+                    <a href={a.urlApi} target="_blank" rel="noreferrer">
+                      <Code2 className="size-3.5" /> API
+                    </a>
+                  </Button>
+                ) : (
+                  <Button variant="ghost" size="sm" disabled title="Añade el enlace editando la aplicación">
+                    <Code2 className="size-3.5" /> API
+                  </Button>
+                )}
                 <Button variant="ghost" size="sm" onClick={() => abrirForm(a)}>
                   <Pencil className="size-3.5" /> Editar
                 </Button>
