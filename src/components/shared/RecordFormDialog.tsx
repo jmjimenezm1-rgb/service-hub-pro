@@ -126,8 +126,8 @@ export function RecordFormDialog({
                   key={c.name}
                   className={
                     c.ancho === "full" || c.tipo === "textarea" || c.tipo === "multiselect"
-                      ? "sm:col-span-2"
-                      : undefined
+                      ? "min-w-0 sm:col-span-2"
+                      : "min-w-0"
                   }
                   style={nuevaSeccion ? { gridColumn: "1 / -1" } : undefined}
                 >
