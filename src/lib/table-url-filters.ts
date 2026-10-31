@@ -1,7 +1,7 @@
 /** La dirección es la fuente de verdad del catálogo, incluida la exclusión manual. */
 export function filtrosAplicaciones(busqueda: Record<string, unknown>) {
-  const estado = typeof busqueda.estado === "string" ? busqueda.estado : "todos";
-  const exclusion = busqueda.ocultarRetiradas;
+  const estado = typeof busqueda["estado"] === "string" ? busqueda["estado"] : "todos";
+  const exclusion = busqueda["ocultarRetiradas"];
   const ocultarRetiradas = exclusion === false || exclusion === "false"
     ? false
     : exclusion === true || exclusion === "true"
