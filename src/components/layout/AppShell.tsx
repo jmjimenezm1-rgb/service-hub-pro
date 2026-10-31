@@ -166,9 +166,11 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
 
           <div className="ml-auto flex items-center gap-1">
-            <Button variant="ghost" size="icon" aria-label="Notificaciones" className="relative">
-              <Bell className="size-4" />
-              <span className="absolute right-2 top-2 size-1.5 rounded-full bg-destructive" />
+            <Button asChild variant="ghost" size="icon" className="relative">
+              <Link to="/notificaciones" aria-label="Notificaciones" title="Notificaciones">
+                <Bell className="size-4" />
+                <span className="absolute right-2 top-2 size-1.5 rounded-full bg-destructive" />
+              </Link>
             </Button>
             <Button variant="ghost" size="icon" onClick={toggle} aria-label="Cambiar tema">
               {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
