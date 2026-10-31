@@ -12,3 +12,4 @@
 - Module tables use the shared DataTable export configuration so CSV downloads follow the current filters across all pages.
 - Optional form selectors map empty values to a UI sentinel and restore the empty value on submission because the select control rejects empty option values.
 - URL-driven table filters reset to their defaults when parameters disappear, so back navigation never keeps a stale indicator filter; the synchronization lives in a pure tested helper.
+- Application catalog exclusions are derived from URL search parameters, including manual choices, so browser history restores the exact catalog view without duplicated local state.

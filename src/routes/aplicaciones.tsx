@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Plus, ExternalLink, BookOpen, Code2, Pencil } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -11,6 +11,7 @@ import { useAplicaciones, useSuscripciones } from "@/lib/db";
 import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
 import { camposAplicacion, filaAplicacion } from "@/lib/form-defs";
 import { useGuardarRegistro } from "@/lib/mutations";
+import { filtrosAplicaciones } from "@/lib/table-url-filters";
 
 export const Route = createFileRoute("/aplicaciones")({
   head: () => ({
@@ -37,6 +38,7 @@ const etiquetaModelo: Record<string, string> = {
 };
 
 function AplicacionesPage() {
+  const navigate = useNavigate();
   const [editando, setEditando] = useState<Aplicacion | null>(null);
   const [formAbierto, setFormAbierto] = useState(false);
   const guardar = useGuardarRegistro("aplicaciones", "aplicaciones", "Aplicación");
@@ -46,8 +48,7 @@ function AplicacionesPage() {
   };
   const todas = useAplicaciones();
   const busqueda = useRouterState({ select: (s) => s.location.search }) as unknown as Record<string, unknown>;
-  const [ocultarRetiradas, setOcultarRetiradas] = useState(busqueda?.["estado"] !== "retirada");
-  const filtroEstado = busqueda?.["estado"] as string | undefined;
+  const { ocultarRetiradas, estado: filtroEstado } = filtrosAplicaciones(busqueda);
   const aplicaciones = todas
     .filter((a) => (ocultarRetiradas ? a.estado !== "retirada" : true))
     .filter((a) => (filtroEstado && filtroEstado !== "todos" ? a.estado === filtroEstado : true));
@@ -68,7 +69,10 @@ function AplicacionesPage() {
       <label className="flex w-fit cursor-pointer items-center gap-2 text-sm">
         <Checkbox
           checked={ocultarRetiradas}
-          onCheckedChange={(v) => setOcultarRetiradas(!!v)}
+          onCheckedChange={(v) => navigate({
+            to: "/aplicaciones",
+            search: { ...busqueda, ocultarRetiradas: v === true },
+          })}
         />
         No mostrar aplicaciones retiradas
       </label>

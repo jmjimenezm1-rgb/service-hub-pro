@@ -8,5 +8,6 @@
 
 ## Siguiente trabajo identificado (fuera de este lote)
 - [x] Aplicaciones: enlaces Manual y API por aplicación.
-- Aplicaciones: conservar y sincronizar la exclusión de retiradas al navegar.
+- [x] Aplicaciones: conservar y sincronizar la exclusión de retiradas al navegar; comprobado al recargar, volver y avanzar, con siete pruebas pasando.
+- [x] Verificar los enlaces Manual/API guardados y su apertura en otra pestaña; enlaces originales restaurados tras la prueba.
 - Notificaciones: envío por email — bloqueado hasta que el usuario tenga un dominio propio.
