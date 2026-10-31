@@ -1,12 +1,12 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Menu, Moon, Sun, Search, Bell, Layers, Lock, LogIn, LogOut } from "lucide-react";
+import { Menu, Moon, Sun, Bell, Layers, Lock, LogIn, LogOut } from "lucide-react";
 import { grupos, modulos } from "@/lib/modules";
 import { supabase } from "@/integrations/supabase/client";
 import { useSesion } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { GlobalSearch } from "@/components/shared/GlobalSearch";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
@@ -160,10 +160,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </SheetContent>
           </Sheet>
 
-          <div className="relative hidden max-w-md flex-1 sm:block">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder="Buscador global: clientes, apps, facturas…" className="pl-9" />
-          </div>
+          <GlobalSearch />
 
           <div className="ml-auto flex items-center gap-1">
             <Button asChild variant="ghost" size="icon" className="relative">
