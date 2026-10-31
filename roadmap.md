@@ -7,6 +7,7 @@
 - [x] Corregir auditoría de tablas sin baja lógica y añadir la columna de baja lógica que faltaba en notificaciones.
 
 ## Siguiente trabajo identificado (fuera de este lote)
+- [ ] Activar el buscador global de clientes, aplicaciones y páginas; comprobar resultados y navegación.
 - [x] Aplicaciones: enlaces Manual y API por aplicación.
 - [x] Aplicaciones: conservar y sincronizar la exclusión de retiradas al navegar; comprobado al recargar, volver y avanzar, con siete pruebas pasando.
 - [x] Verificar los enlaces Manual/API guardados y su apertura en otra pestaña; enlaces originales restaurados tras la prueba.

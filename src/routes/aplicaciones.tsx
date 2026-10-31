@@ -50,6 +50,7 @@ function AplicacionesPage() {
   const busqueda = useRouterState({ select: (s) => s.location.search }) as unknown as Record<string, unknown>;
   const { ocultarRetiradas, estado: filtroEstado } = filtrosAplicaciones(busqueda);
   const aplicaciones = todas
+    .filter((a) => !busqueda["aplicacion"] || String(a.id) === String(busqueda["aplicacion"]))
     .filter((a) => (ocultarRetiradas ? a.estado !== "retirada" : true))
     .filter((a) => (filtroEstado && filtroEstado !== "todos" ? a.estado === filtroEstado : true));
 
@@ -66,6 +67,7 @@ function AplicacionesPage() {
         }
       />
 
+      <div className="flex flex-wrap items-center gap-3">
       <label className="flex w-fit cursor-pointer items-center gap-2 text-sm">
         <Checkbox
           checked={ocultarRetiradas}
@@ -76,6 +78,10 @@ function AplicacionesPage() {
         />
         No mostrar aplicaciones retiradas
       </label>
+      {busqueda["aplicacion"] ? <Button variant="outline" size="sm" onClick={() => { void navigate({ to: "/aplicaciones", search: {} }); }}>Ver todas las aplicaciones</Button> : null}
+      </div>
+
+      {aplicaciones.length === 0 ? <p className="py-8 text-center text-sm text-muted-foreground">Sin aplicaciones para los filtros seleccionados.</p> : null}
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {aplicaciones.map((a) => {
