@@ -1,5 +1,12 @@
 # ServiceHub: funciones pendientes
 
+## Fusión financiera solicitada
+- [x] Obtener e inspeccionar el código financiero de GitHub sin modificar la aplicación.
+- [ ] Completar inventario, conflictos y plan para aprobación.
+- [ ] Integrar seguridad, datos comunes, módulos financieros y auditoría por etapas verificables tras aprobar el plan.
+- [ ] Importar registros, identidades y archivos del origen — pendiente de exportaciones autorizadas.
+- [ ] Verificar núcleo, finanzas, permisos, aislamiento y conservación visual.
+
 - [x] Completar exportación y búsqueda en la matriz de permisos.
 - [x] Corregir filtros que permanecen aplicados al volver o quitar parámetros de la dirección; cuatro pruebas automatizadas pasan.
 - [x] Revisar metadatos de todas las páginas existentes.
