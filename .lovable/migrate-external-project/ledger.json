@@ -1,0 +1,104 @@
+{
+  "source": "jmjimenezm1-rgb/service-hub-pro-6913b27d",
+  "phase": "analysis",
+  "capabilities": [
+    {
+      "capability": "code",
+      "source": "GitHub main f432822",
+      "outcome": "merge",
+      "status": "inventoried",
+      "next_action": "Integrar en anfitrión tras aprobar plan"
+    },
+    {
+      "capability": "schema",
+      "source": "Migraciones SQL fuente y esquema anfitrión leído",
+      "outcome": "migrate",
+      "status": "planned",
+      "next_action": "Migraciones aditivas y catálogo único"
+    },
+    {
+      "capability": "records",
+      "source": "Base financiera sin exportación adjunta",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Exportar CSV/JSON desde chat del proyecto fuente; no consultar su base con claves del código"
+    },
+    {
+      "capability": "auth identities",
+      "source": "Fuente profiles/user_roles; anfitrión auth existente",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Exportar identidades y vincular con verificación de email, sin contraseñas"
+    },
+    {
+      "capability": "authorization",
+      "source": "RLS anfitrión sin aislamiento; roles financieros",
+      "outcome": "unify",
+      "status": "planned",
+      "next_action": "Definir organizaciones y membresías, mapa explícito de roles y RLS"
+    },
+    {
+      "capability": "uploaded file bytes",
+      "source": "Bucket documentos fuente",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Exportar archivos y metadatos; transferir con acceso autorizado"
+    },
+    {
+      "capability": "external providers",
+      "source": "No proveedor activo confirmado; métodos Stripe/PayPal son etiquetas",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "Confirmar inventario por llamadas reales; email bloqueado por dominio"
+    },
+    {
+      "capability": "public endpoints",
+      "source": "/api/public/ip",
+      "outcome": "preserve",
+      "status": "planned",
+      "next_action": "Conservar contrato y validar exposición"
+    },
+    {
+      "capability": "callbacks",
+      "source": "Auth fuente reemplazado por auth anfitrión",
+      "outcome": "unify",
+      "status": "planned",
+      "next_action": "Un único login; preservar destinos seguros"
+    },
+    {
+      "capability": "webhooks",
+      "source": "No detectados por inspección inicial",
+      "outcome": "inspect",
+      "status": "pending",
+      "next_action": "Completar revisión fuente"
+    },
+    {
+      "capability": "schedules",
+      "source": "No detectados por inspección inicial",
+      "outcome": "inspect",
+      "status": "pending",
+      "next_action": "Completar revisión fuente"
+    },
+    {
+      "capability": "secrets",
+      "source": "No se copiaron valores sensibles",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "Solo solicitar secretos de proveedores retenidos si se detectan"
+    },
+    {
+      "capability": "cutover",
+      "source": "Proyecto actual como anfitrión único",
+      "outcome": "merge",
+      "status": "planned",
+      "next_action": "No publicar sin solicitud; retirar dependencia del origen"
+    },
+    {
+      "capability": "verification",
+      "source": "Pruebas existentes y navegador de ambos núcleos",
+      "outcome": "verify",
+      "status": "pending",
+      "next_action": "Verificación incremental funcional, contable, seguridad y visual"
+    }
+  ]
+}
