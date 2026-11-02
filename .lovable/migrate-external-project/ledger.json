@@ -1,6 +1,6 @@
 {
   "source": "jmjimenezm1-rgb/service-hub-pro-6913b27d",
-  "phase": "analysis",
+  "phase": "awaiting_plan_approval",
   "capabilities": [
     {
       "capability": "code",
@@ -35,7 +35,7 @@
       "source": "RLS anfitrión sin aislamiento; roles financieros",
       "outcome": "unify",
       "status": "planned",
-      "next_action": "Definir organizaciones y membresías, mapa explícito de roles y RLS"
+      "next_action": "Implementar empresas gestoras independientes y membresías protegidas; mapa explícito de roles y RLS tras aprobar el plan"
     },
     {
       "capability": "uploaded file bytes",
@@ -67,17 +67,17 @@
     },
     {
       "capability": "webhooks",
-      "source": "No detectados por inspección inicial",
+      "source": "No detectados por revisión de llamadas y módulos financieros",
       "outcome": "inspect",
       "status": "pending",
-      "next_action": "Completar revisión fuente"
+      "next_action": "Revalidar ausencia al integrar y no inferir conexiones desde etiquetas de métodos de pago"
     },
     {
       "capability": "schedules",
-      "source": "No detectados por inspección inicial",
+      "source": "No detectados por revisión de llamadas y módulos financieros",
       "outcome": "inspect",
       "status": "pending",
-      "next_action": "Completar revisión fuente"
+      "next_action": "Revalidar ausencia al integrar los módulos"
     },
     {
       "capability": "secrets",
