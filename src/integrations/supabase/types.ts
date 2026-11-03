@@ -475,6 +475,94 @@ export type Database = {
           },
         ]
       }
+      organizacion_miembros: {
+        Row: {
+          activo: boolean
+          created_at: string
+          id: string
+          organizacion_id: string
+          user_id: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          id?: string
+          organizacion_id: string
+          user_id: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          id?: string
+          organizacion_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizacion_miembros_organizacion_id_fkey"
+            columns: ["organizacion_id"]
+            isOneToOne: false
+            referencedRelation: "organizaciones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizacion_permisos: {
+        Row: {
+          id: string
+          modulo: string
+          nivel: string
+          organizacion_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          modulo: string
+          nivel?: string
+          organizacion_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          modulo?: string
+          nivel?: string
+          organizacion_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizacion_permisos_organizacion_id_user_id_fkey"
+            columns: ["organizacion_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "organizacion_miembros"
+            referencedColumns: ["organizacion_id", "user_id"]
+          },
+        ]
+      }
+      organizaciones: {
+        Row: {
+          activa: boolean
+          created_at: string
+          id: string
+          nombre: string
+          updated_at: string
+        }
+        Insert: {
+          activa?: boolean
+          created_at?: string
+          id?: string
+          nombre: string
+          updated_at?: string
+        }
+        Update: {
+          activa?: boolean
+          created_at?: string
+          id?: string
+          nombre?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       plantillas_notificacion: {
         Row: {
           activa: boolean
@@ -657,6 +745,35 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          id: string
+          organizacion_id: string
+          role: Database["public"]["Enums"]["organization_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          organizacion_id: string
+          role?: Database["public"]["Enums"]["organization_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          organizacion_id?: string
+          role?: Database["public"]["Enums"]["organization_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_organizacion_id_user_id_fkey"
+            columns: ["organizacion_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "organizacion_miembros"
+            referencedColumns: ["organizacion_id", "user_id"]
+          },
+        ]
+      }
       usuarios: {
         Row: {
           apellidos: string
@@ -733,10 +850,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      es_admin_organizacion: {
+        Args: { _organizacion: string }
+        Returns: boolean
+      }
+      es_miembro_organizacion: {
+        Args: { _organizacion: string }
+        Returns: boolean
+      }
+      tiene_permiso_organizacion: {
+        Args: { _modulo: string; _nivel: string; _organizacion: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      organization_role: "admin" | "member"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -863,6 +991,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      organization_role: ["admin", "member"],
+    },
   },
 } as const
