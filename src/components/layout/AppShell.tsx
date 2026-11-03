@@ -70,7 +70,7 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
               return (
                 <Link
                   key={m.id}
-                  to={m.ruta!}
+                  to={m.ruta ?? "/"}
                   onClick={onNavigate}
                   className={cn(
                     "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors",
@@ -100,7 +100,7 @@ function SesionCard() {
         {sesion?.user.email ?? "Sin sesión"}
       </p>
       <p className="text-[11px] text-sidebar-foreground/60">
-        {sesion ? "Administrador General" : "Solo lectura"}
+        {sesion ? "Sesión iniciada" : "Sin sesión"}
       </p>
     </div>
   );

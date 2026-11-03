@@ -3,7 +3,8 @@
 ## Fusión financiera solicitada
 - [x] Obtener e inspeccionar el código financiero de GitHub sin modificar la aplicación.
 - [x] Completar inventario y conflictos de ambos proyectos; confirmar que cada organización es una empresa gestora.
-- [ ] Aprobar el plan de integración presentado.
+- [x] Aprobar el plan de integración presentado.
+- [ ] Crear y verificar organizaciones, membresías y permisos protegidos; después incorporar los registros actuales con autorización explícita.
 - [ ] Integrar seguridad, datos comunes, módulos financieros y auditoría por etapas verificables tras aprobar el plan.
 - [ ] Importar registros, identidades y archivos del origen — pendiente de exportaciones autorizadas.
 - [ ] Verificar núcleo, finanzas, permisos, aislamiento y conservación visual.

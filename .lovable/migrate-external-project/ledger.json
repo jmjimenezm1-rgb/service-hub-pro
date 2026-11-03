@@ -1,13 +1,13 @@
 {
   "source": "jmjimenezm1-rgb/service-hub-pro-6913b27d",
-  "phase": "awaiting_plan_approval",
+  "phase": "implementing_security_foundation",
   "capabilities": [
     {
       "capability": "code",
       "source": "GitHub main f432822",
       "outcome": "merge",
       "status": "inventoried",
-      "next_action": "Integrar en anfitrión tras aprobar plan"
+      "next_action": "Integrar en anfitrión conforme al plan aprobado"
     },
     {
       "capability": "schema",

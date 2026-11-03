@@ -14,3 +14,6 @@
 - URL-driven table filters reset to their defaults when parameters disappear, so back navigation never keeps a stale indicator filter; the synchronization lives in a pure tested helper.
 - Application catalog exclusions are derived from URL search parameters, including manual choices, so browser history restores the exact catalog view without duplicated local state.
 - Global search reuses the existing RLS-protected catalog queries and module registry; selection opens a client detail or an application-ID-filtered catalog rather than duplicating record screens.
+- Organization authorization uses protected memberships, user_roles and explicit module grants; legacy editable role labels never authorize access, preventing privilege escalation.
+- New private routes live under the client-only _authenticated layout; migrate legacy routes only alongside their RLS cutover to preserve the existing experience.
+- Identity transitions invalidate routing and queries centrally in the root; sign-out clears cached private data without refetching it.
