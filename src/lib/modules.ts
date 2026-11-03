@@ -12,6 +12,7 @@ import {
   Calculator,
   History,
   LifeBuoy,
+  Building2,
   type LucideIcon,
 } from "lucide-react";
 
@@ -37,6 +38,7 @@ export const modulos: ModuloDef[] = [
   { id: "suscripciones", nombre: "Suscripciones", icono: Repeat, ruta: "/suscripciones", grupo: "Operación", disponible: true },
   { id: "usuarios", nombre: "Usuarios", icono: UserCog, ruta: "/usuarios", grupo: "Plataforma", disponible: true },
   { id: "permisos", nombre: "Roles y permisos", icono: ShieldCheck, ruta: "/permisos", grupo: "Plataforma", disponible: true },
+  { id: "organizaciones", nombre: "Empresas gestoras", icono: Building2, ruta: "/organizaciones", grupo: "Plataforma", disponible: true },
   { id: "consumo", nombre: "Gestión del uso", icono: Activity, ruta: "/consumo", grupo: "Plataforma", disponible: true },
   { id: "notificaciones", nombre: "Notificaciones", icono: Bell, ruta: "/notificaciones", grupo: "Plataforma", disponible: true },
   { id: "auditoria", nombre: "Auditoría", icono: History, ruta: "/auditoria", grupo: "Plataforma", disponible: true },
