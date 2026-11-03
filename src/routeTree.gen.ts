@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AplicacionesRouteImport } from './routes/aplicaciones'
 import { Route as AuditoriaRouteImport } from './routes/auditoria'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -18,12 +19,17 @@ import { Route as NotificacionesRouteImport } from './routes/notificaciones'
 import { Route as PermisosRouteImport } from './routes/permisos'
 import { Route as SuscripcionesRouteImport } from './routes/suscripciones'
 import { Route as UsuariosRouteImport } from './routes/usuarios'
+import { Route as AuthenticatedOrganizacionesRouteImport } from './routes/_authenticated/organizaciones'
 import { Route as CrmIndexRouteImport } from './routes/crm.index'
 import { Route as CrmClienteIdRouteImport } from './routes/crm.$clienteId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AplicacionesRoute = AplicacionesRouteImport.update({
@@ -66,6 +72,12 @@ const UsuariosRoute = UsuariosRouteImport.update({
   path: '/usuarios',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedOrganizacionesRoute =
+  AuthenticatedOrganizacionesRouteImport.update({
+    id: '/organizaciones',
+    path: '/organizaciones',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const CrmIndexRoute = CrmIndexRouteImport.update({
   id: '/crm/',
   path: '/crm/',
@@ -87,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/permisos': typeof PermisosRoute
   '/suscripciones': typeof SuscripcionesRoute
   '/usuarios': typeof UsuariosRoute
+  '/organizaciones': typeof AuthenticatedOrganizacionesRoute
   '/crm/$clienteId': typeof CrmClienteIdRoute
   '/crm/': typeof CrmIndexRoute
 }
@@ -100,12 +113,14 @@ export interface FileRoutesByTo {
   '/permisos': typeof PermisosRoute
   '/suscripciones': typeof SuscripcionesRoute
   '/usuarios': typeof UsuariosRoute
+  '/organizaciones': typeof AuthenticatedOrganizacionesRoute
   '/crm/$clienteId': typeof CrmClienteIdRoute
   '/crm': typeof CrmIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/aplicaciones': typeof AplicacionesRoute
   '/auditoria': typeof AuditoriaRoute
   '/auth': typeof AuthRoute
@@ -114,6 +129,7 @@ export interface FileRoutesById {
   '/permisos': typeof PermisosRoute
   '/suscripciones': typeof SuscripcionesRoute
   '/usuarios': typeof UsuariosRoute
+  '/_authenticated/organizaciones': typeof AuthenticatedOrganizacionesRoute
   '/crm/$clienteId': typeof CrmClienteIdRoute
   '/crm/': typeof CrmIndexRoute
 }
@@ -129,6 +145,7 @@ export interface FileRouteTypes {
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
+    | '/organizaciones'
     | '/crm/$clienteId'
     | '/crm/'
   fileRoutesByTo: FileRoutesByTo
@@ -142,11 +159,13 @@ export interface FileRouteTypes {
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
+    | '/organizaciones'
     | '/crm/$clienteId'
     | '/crm'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/aplicaciones'
     | '/auditoria'
     | '/auth'
@@ -155,12 +174,14 @@ export interface FileRouteTypes {
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
+    | '/_authenticated/organizaciones'
     | '/crm/$clienteId'
     | '/crm/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AplicacionesRoute: typeof AplicacionesRoute
   AuditoriaRoute: typeof AuditoriaRoute
   AuthRoute: typeof AuthRoute
@@ -180,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/aplicaciones': {
@@ -238,6 +266,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UsuariosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/organizaciones': {
+      id: '/_authenticated/organizaciones'
+      path: '/organizaciones'
+      fullPath: '/organizaciones'
+      preLoaderRoute: typeof AuthenticatedOrganizacionesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/crm/': {
       id: '/crm/'
       path: '/crm'
@@ -255,8 +290,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedOrganizacionesRoute: typeof AuthenticatedOrganizacionesRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedOrganizacionesRoute: AuthenticatedOrganizacionesRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AplicacionesRoute: AplicacionesRoute,
   AuditoriaRoute: AuditoriaRoute,
   AuthRoute: AuthRoute,
