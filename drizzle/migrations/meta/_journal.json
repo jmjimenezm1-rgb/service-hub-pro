@@ -29,6 +29,13 @@
       "when": 1793729404139,
       "tag": "0003_organization_security_foundation",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793750946031,
+      "tag": "0004_harden_organization_grants",
+      "breakpoints": true
     }
   ]
 }
