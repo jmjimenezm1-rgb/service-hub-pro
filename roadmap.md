@@ -5,7 +5,7 @@
 - [x] Completar inventario y conflictos de ambos proyectos; confirmar que cada organización es una empresa gestora.
 - [x] Aprobar el plan de integración presentado.
 - [x] Crear y verificar organizaciones, membresías y permisos protegidos (prueba de aislamiento pasa; corregido permiso de autoasignación).
-- [ ] Incorporar los registros actuales a la empresa gestora — pendiente de que el usuario indique nombre de empresa y administrador.
+- [ ] Incorporar los registros actuales a la empresa gestora — empresa "Travesías" creada; nombrar administradora a jmjimenezm1@gmail.com cuando se registre y verifique su email.
 - [ ] Integrar seguridad, datos comunes, módulos financieros y auditoría por etapas verificables tras aprobar el plan.
 - [ ] Importar registros, identidades y archivos del origen — pendiente de exportaciones autorizadas.
 - [ ] Verificar núcleo, finanzas, permisos, aislamiento y conservación visual.
