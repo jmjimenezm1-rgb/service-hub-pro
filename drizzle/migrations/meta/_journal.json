@@ -36,6 +36,13 @@
       "when": 1793750946031,
       "tag": "0004_harden_organization_grants",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793751662955,
+      "tag": "0005_assign_core_records_to_organization",
+      "breakpoints": true
     }
   ]
 }
