@@ -17,3 +17,5 @@
 - Organization authorization uses protected memberships, user_roles and explicit module grants; legacy editable role labels never authorize access, preventing privilege escalation.
 - New private routes live under the client-only _authenticated layout; migrate legacy routes only alongside their RLS cutover to preserve the existing experience.
 - Identity transitions invalidate routing and queries centrally in the root; sign-out clears cached private data without refetching it.
+- Core organization ownership is assigned and relationship-validated by database triggers; RLS authorizes every read/write independently of editable legacy role labels.
+- Generic record mutations require a returned row so RLS-filtered no-op updates never report successful saves.
