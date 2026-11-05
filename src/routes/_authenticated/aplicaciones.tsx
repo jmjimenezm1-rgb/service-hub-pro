@@ -13,7 +13,7 @@ import { camposAplicacion, filaAplicacion } from "@/lib/form-defs";
 import { useGuardarRegistro } from "@/lib/mutations";
 import { filtrosAplicaciones } from "@/lib/table-url-filters";
 
-export const Route = createFileRoute("/aplicaciones")({
+export const Route = createFileRoute("/_authenticated/aplicaciones")({
   head: () => ({
     meta: [
       { title: "Catálogo de aplicaciones · ServiceHub" },

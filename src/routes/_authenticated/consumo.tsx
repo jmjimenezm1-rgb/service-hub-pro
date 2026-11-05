@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { eur, num, type RegistroConsumo } from "@/lib/mock-data";
 import { useCatalogo, useConsumos } from "@/lib/db";
 
-export const Route = createFileRoute("/consumo")({
+export const Route = createFileRoute("/_authenticated/consumo")({
   head: () => ({
     meta: [
       { title: "Gestión del uso y consumo · ServiceHub" },

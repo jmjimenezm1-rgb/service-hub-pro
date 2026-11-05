@@ -12,7 +12,7 @@ import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
 import { camposCliente, filaCliente } from "@/lib/form-defs";
 import { useGuardarRegistro } from "@/lib/mutations";
 
-export const Route = createFileRoute("/crm/")({
+export const Route = createFileRoute("/_authenticated/crm/")({
   head: () => ({
     meta: [
       { title: "CRM de clientes · ServiceHub" },

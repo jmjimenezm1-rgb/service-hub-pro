@@ -31,7 +31,7 @@ import { useRolPermisos, useRoles, useUsuarios, type Rol } from "@/lib/db";
 import { modulosPermisos, type NivelPermiso } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/permisos")({
+export const Route = createFileRoute("/_authenticated/permisos")({
   head: () => ({
     meta: [
       { title: "Roles y permisos RBAC · ServiceHub" },

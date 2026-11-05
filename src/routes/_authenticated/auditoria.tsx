@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import { useAuditoria, type EntradaAuditoria } from "@/lib/db";
 
-export const Route = createFileRoute("/auditoria")({
+export const Route = createFileRoute("/_authenticated/auditoria")({
   head: () => ({
     meta: [
       { title: "Auditoría de cambios · ServiceHub" },

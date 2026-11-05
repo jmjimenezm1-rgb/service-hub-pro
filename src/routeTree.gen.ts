@@ -11,17 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AplicacionesRouteImport } from './routes/aplicaciones'
-import { Route as AuditoriaRouteImport } from './routes/auditoria'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as ConsumoRouteImport } from './routes/consumo'
-import { Route as NotificacionesRouteImport } from './routes/notificaciones'
-import { Route as PermisosRouteImport } from './routes/permisos'
-import { Route as SuscripcionesRouteImport } from './routes/suscripciones'
-import { Route as UsuariosRouteImport } from './routes/usuarios'
+import { Route as AuthenticatedAplicacionesRouteImport } from './routes/_authenticated/aplicaciones'
+import { Route as AuthenticatedAuditoriaRouteImport } from './routes/_authenticated/auditoria'
+import { Route as AuthenticatedConsumoRouteImport } from './routes/_authenticated/consumo'
+import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
+import { Route as AuthenticatedNotificacionesRouteImport } from './routes/_authenticated/notificaciones'
 import { Route as AuthenticatedOrganizacionesRouteImport } from './routes/_authenticated/organizaciones'
-import { Route as CrmIndexRouteImport } from './routes/crm.index'
-import { Route as CrmClienteIdRouteImport } from './routes/crm.$clienteId'
+import { Route as AuthenticatedPermisosRouteImport } from './routes/_authenticated/permisos'
+import { Route as AuthenticatedSuscripcionesRouteImport } from './routes/_authenticated/suscripciones'
+import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated/usuarios'
+import { Route as AuthenticatedCrmIndexRouteImport } from './routes/_authenticated/crm.index'
+import { Route as AuthenticatedCrmClienteIdRouteImport } from './routes/_authenticated/crm.$clienteId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -32,166 +33,172 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AplicacionesRoute = AplicacionesRouteImport.update({
-  id: '/aplicaciones',
-  path: '/aplicaciones',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuditoriaRoute = AuditoriaRouteImport.update({
-  id: '/auditoria',
-  path: '/auditoria',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConsumoRoute = ConsumoRouteImport.update({
+const AuthenticatedAplicacionesRoute =
+  AuthenticatedAplicacionesRouteImport.update({
+    id: '/aplicaciones',
+    path: '/aplicaciones',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAuditoriaRoute = AuthenticatedAuditoriaRouteImport.update({
+  id: '/auditoria',
+  path: '/auditoria',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedConsumoRoute = AuthenticatedConsumoRouteImport.update({
   id: '/consumo',
   path: '/consumo',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const NotificacionesRoute = NotificacionesRouteImport.update({
-  id: '/notificaciones',
-  path: '/notificaciones',
-  getParentRoute: () => rootRouteImport,
+const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const PermisosRoute = PermisosRouteImport.update({
-  id: '/permisos',
-  path: '/permisos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SuscripcionesRoute = SuscripcionesRouteImport.update({
-  id: '/suscripciones',
-  path: '/suscripciones',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UsuariosRoute = UsuariosRouteImport.update({
-  id: '/usuarios',
-  path: '/usuarios',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedNotificacionesRoute =
+  AuthenticatedNotificacionesRouteImport.update({
+    id: '/notificaciones',
+    path: '/notificaciones',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedOrganizacionesRoute =
   AuthenticatedOrganizacionesRouteImport.update({
     id: '/organizaciones',
     path: '/organizaciones',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const CrmIndexRoute = CrmIndexRouteImport.update({
+const AuthenticatedPermisosRoute = AuthenticatedPermisosRouteImport.update({
+  id: '/permisos',
+  path: '/permisos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSuscripcionesRoute =
+  AuthenticatedSuscripcionesRouteImport.update({
+    id: '/suscripciones',
+    path: '/suscripciones',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedUsuariosRoute = AuthenticatedUsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCrmIndexRoute = AuthenticatedCrmIndexRouteImport.update({
   id: '/crm/',
   path: '/crm/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const CrmClienteIdRoute = CrmClienteIdRouteImport.update({
-  id: '/crm/$clienteId',
-  path: '/crm/$clienteId',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedCrmClienteIdRoute =
+  AuthenticatedCrmClienteIdRouteImport.update({
+    id: '/crm/$clienteId',
+    path: '/crm/$clienteId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/aplicaciones': typeof AplicacionesRoute
-  '/auditoria': typeof AuditoriaRoute
   '/auth': typeof AuthRoute
-  '/consumo': typeof ConsumoRoute
-  '/notificaciones': typeof NotificacionesRoute
-  '/permisos': typeof PermisosRoute
-  '/suscripciones': typeof SuscripcionesRoute
-  '/usuarios': typeof UsuariosRoute
+  '/aplicaciones': typeof AuthenticatedAplicacionesRoute
+  '/auditoria': typeof AuthenticatedAuditoriaRoute
+  '/consumo': typeof AuthenticatedConsumoRoute
+  '/home': typeof AuthenticatedHomeRoute
+  '/notificaciones': typeof AuthenticatedNotificacionesRoute
   '/organizaciones': typeof AuthenticatedOrganizacionesRoute
-  '/crm/$clienteId': typeof CrmClienteIdRoute
-  '/crm/': typeof CrmIndexRoute
+  '/permisos': typeof AuthenticatedPermisosRoute
+  '/suscripciones': typeof AuthenticatedSuscripcionesRoute
+  '/usuarios': typeof AuthenticatedUsuariosRoute
+  '/crm/$clienteId': typeof AuthenticatedCrmClienteIdRoute
+  '/crm/': typeof AuthenticatedCrmIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/aplicaciones': typeof AplicacionesRoute
-  '/auditoria': typeof AuditoriaRoute
   '/auth': typeof AuthRoute
-  '/consumo': typeof ConsumoRoute
-  '/notificaciones': typeof NotificacionesRoute
-  '/permisos': typeof PermisosRoute
-  '/suscripciones': typeof SuscripcionesRoute
-  '/usuarios': typeof UsuariosRoute
+  '/aplicaciones': typeof AuthenticatedAplicacionesRoute
+  '/auditoria': typeof AuthenticatedAuditoriaRoute
+  '/consumo': typeof AuthenticatedConsumoRoute
+  '/home': typeof AuthenticatedHomeRoute
+  '/notificaciones': typeof AuthenticatedNotificacionesRoute
   '/organizaciones': typeof AuthenticatedOrganizacionesRoute
-  '/crm/$clienteId': typeof CrmClienteIdRoute
-  '/crm': typeof CrmIndexRoute
+  '/permisos': typeof AuthenticatedPermisosRoute
+  '/suscripciones': typeof AuthenticatedSuscripcionesRoute
+  '/usuarios': typeof AuthenticatedUsuariosRoute
+  '/crm/$clienteId': typeof AuthenticatedCrmClienteIdRoute
+  '/crm': typeof AuthenticatedCrmIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/aplicaciones': typeof AplicacionesRoute
-  '/auditoria': typeof AuditoriaRoute
   '/auth': typeof AuthRoute
-  '/consumo': typeof ConsumoRoute
-  '/notificaciones': typeof NotificacionesRoute
-  '/permisos': typeof PermisosRoute
-  '/suscripciones': typeof SuscripcionesRoute
-  '/usuarios': typeof UsuariosRoute
+  '/_authenticated/aplicaciones': typeof AuthenticatedAplicacionesRoute
+  '/_authenticated/auditoria': typeof AuthenticatedAuditoriaRoute
+  '/_authenticated/consumo': typeof AuthenticatedConsumoRoute
+  '/_authenticated/home': typeof AuthenticatedHomeRoute
+  '/_authenticated/notificaciones': typeof AuthenticatedNotificacionesRoute
   '/_authenticated/organizaciones': typeof AuthenticatedOrganizacionesRoute
-  '/crm/$clienteId': typeof CrmClienteIdRoute
-  '/crm/': typeof CrmIndexRoute
+  '/_authenticated/permisos': typeof AuthenticatedPermisosRoute
+  '/_authenticated/suscripciones': typeof AuthenticatedSuscripcionesRoute
+  '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
+  '/_authenticated/crm/$clienteId': typeof AuthenticatedCrmClienteIdRoute
+  '/_authenticated/crm/': typeof AuthenticatedCrmIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/aplicaciones'
     | '/auditoria'
-    | '/auth'
     | '/consumo'
+    | '/home'
     | '/notificaciones'
+    | '/organizaciones'
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
-    | '/organizaciones'
     | '/crm/$clienteId'
     | '/crm/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/aplicaciones'
     | '/auditoria'
-    | '/auth'
     | '/consumo'
+    | '/home'
     | '/notificaciones'
+    | '/organizaciones'
     | '/permisos'
     | '/suscripciones'
     | '/usuarios'
-    | '/organizaciones'
     | '/crm/$clienteId'
     | '/crm'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
-    | '/aplicaciones'
-    | '/auditoria'
     | '/auth'
-    | '/consumo'
-    | '/notificaciones'
-    | '/permisos'
-    | '/suscripciones'
-    | '/usuarios'
+    | '/_authenticated/aplicaciones'
+    | '/_authenticated/auditoria'
+    | '/_authenticated/consumo'
+    | '/_authenticated/home'
+    | '/_authenticated/notificaciones'
     | '/_authenticated/organizaciones'
-    | '/crm/$clienteId'
-    | '/crm/'
+    | '/_authenticated/permisos'
+    | '/_authenticated/suscripciones'
+    | '/_authenticated/usuarios'
+    | '/_authenticated/crm/$clienteId'
+    | '/_authenticated/crm/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AplicacionesRoute: typeof AplicacionesRoute
-  AuditoriaRoute: typeof AuditoriaRoute
   AuthRoute: typeof AuthRoute
-  ConsumoRoute: typeof ConsumoRoute
-  NotificacionesRoute: typeof NotificacionesRoute
-  PermisosRoute: typeof PermisosRoute
-  SuscripcionesRoute: typeof SuscripcionesRoute
-  UsuariosRoute: typeof UsuariosRoute
-  CrmClienteIdRoute: typeof CrmClienteIdRoute
-  CrmIndexRoute: typeof CrmIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -210,20 +217,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/aplicaciones': {
-      id: '/aplicaciones'
-      path: '/aplicaciones'
-      fullPath: '/aplicaciones'
-      preLoaderRoute: typeof AplicacionesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auditoria': {
-      id: '/auditoria'
-      path: '/auditoria'
-      fullPath: '/auditoria'
-      preLoaderRoute: typeof AuditoriaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -231,40 +224,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/consumo': {
-      id: '/consumo'
+    '/_authenticated/aplicaciones': {
+      id: '/_authenticated/aplicaciones'
+      path: '/aplicaciones'
+      fullPath: '/aplicaciones'
+      preLoaderRoute: typeof AuthenticatedAplicacionesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/auditoria': {
+      id: '/_authenticated/auditoria'
+      path: '/auditoria'
+      fullPath: '/auditoria'
+      preLoaderRoute: typeof AuthenticatedAuditoriaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/consumo': {
+      id: '/_authenticated/consumo'
       path: '/consumo'
       fullPath: '/consumo'
-      preLoaderRoute: typeof ConsumoRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedConsumoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/notificaciones': {
-      id: '/notificaciones'
+    '/_authenticated/home': {
+      id: '/_authenticated/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AuthenticatedHomeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notificaciones': {
+      id: '/_authenticated/notificaciones'
       path: '/notificaciones'
       fullPath: '/notificaciones'
-      preLoaderRoute: typeof NotificacionesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/permisos': {
-      id: '/permisos'
-      path: '/permisos'
-      fullPath: '/permisos'
-      preLoaderRoute: typeof PermisosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/suscripciones': {
-      id: '/suscripciones'
-      path: '/suscripciones'
-      fullPath: '/suscripciones'
-      preLoaderRoute: typeof SuscripcionesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/usuarios': {
-      id: '/usuarios'
-      path: '/usuarios'
-      fullPath: '/usuarios'
-      preLoaderRoute: typeof UsuariosRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedNotificacionesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/organizaciones': {
       id: '/_authenticated/organizaciones'
@@ -273,29 +266,70 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganizacionesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/crm/': {
-      id: '/crm/'
+    '/_authenticated/permisos': {
+      id: '/_authenticated/permisos'
+      path: '/permisos'
+      fullPath: '/permisos'
+      preLoaderRoute: typeof AuthenticatedPermisosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/suscripciones': {
+      id: '/_authenticated/suscripciones'
+      path: '/suscripciones'
+      fullPath: '/suscripciones'
+      preLoaderRoute: typeof AuthenticatedSuscripcionesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/usuarios': {
+      id: '/_authenticated/usuarios'
+      path: '/usuarios'
+      fullPath: '/usuarios'
+      preLoaderRoute: typeof AuthenticatedUsuariosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/crm/': {
+      id: '/_authenticated/crm/'
       path: '/crm'
       fullPath: '/crm/'
-      preLoaderRoute: typeof CrmIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedCrmIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/crm/$clienteId': {
-      id: '/crm/$clienteId'
+    '/_authenticated/crm/$clienteId': {
+      id: '/_authenticated/crm/$clienteId'
       path: '/crm/$clienteId'
       fullPath: '/crm/$clienteId'
-      preLoaderRoute: typeof CrmClienteIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedCrmClienteIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAplicacionesRoute: typeof AuthenticatedAplicacionesRoute
+  AuthenticatedAuditoriaRoute: typeof AuthenticatedAuditoriaRoute
+  AuthenticatedConsumoRoute: typeof AuthenticatedConsumoRoute
+  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedNotificacionesRoute: typeof AuthenticatedNotificacionesRoute
   AuthenticatedOrganizacionesRoute: typeof AuthenticatedOrganizacionesRoute
+  AuthenticatedPermisosRoute: typeof AuthenticatedPermisosRoute
+  AuthenticatedSuscripcionesRoute: typeof AuthenticatedSuscripcionesRoute
+  AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
+  AuthenticatedCrmClienteIdRoute: typeof AuthenticatedCrmClienteIdRoute
+  AuthenticatedCrmIndexRoute: typeof AuthenticatedCrmIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAplicacionesRoute: AuthenticatedAplicacionesRoute,
+  AuthenticatedAuditoriaRoute: AuthenticatedAuditoriaRoute,
+  AuthenticatedConsumoRoute: AuthenticatedConsumoRoute,
+  AuthenticatedHomeRoute: AuthenticatedHomeRoute,
+  AuthenticatedNotificacionesRoute: AuthenticatedNotificacionesRoute,
   AuthenticatedOrganizacionesRoute: AuthenticatedOrganizacionesRoute,
+  AuthenticatedPermisosRoute: AuthenticatedPermisosRoute,
+  AuthenticatedSuscripcionesRoute: AuthenticatedSuscripcionesRoute,
+  AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
+  AuthenticatedCrmClienteIdRoute: AuthenticatedCrmClienteIdRoute,
+  AuthenticatedCrmIndexRoute: AuthenticatedCrmIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -304,16 +338,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AplicacionesRoute: AplicacionesRoute,
-  AuditoriaRoute: AuditoriaRoute,
   AuthRoute: AuthRoute,
-  ConsumoRoute: ConsumoRoute,
-  NotificacionesRoute: NotificacionesRoute,
-  PermisosRoute: PermisosRoute,
-  SuscripcionesRoute: SuscripcionesRoute,
-  UsuariosRoute: UsuariosRoute,
-  CrmClienteIdRoute: CrmClienteIdRoute,
-  CrmIndexRoute: CrmIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

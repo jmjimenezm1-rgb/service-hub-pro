@@ -15,7 +15,7 @@ import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
 import { camposUsuario, filaUsuario } from "@/lib/form-defs";
 import { useGuardarRegistro } from "@/lib/mutations";
 
-export const Route = createFileRoute("/usuarios")({
+export const Route = createFileRoute("/_authenticated/usuarios")({
   head: () => ({
     meta: [
       { title: "Usuarios y accesos · ServiceHub" },

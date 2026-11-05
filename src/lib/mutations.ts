@@ -14,10 +14,11 @@ export function useGuardarRegistro(tabla: string, queryKey: string, etiqueta: st
   return useMutation({
     mutationFn: async ({ id, valores }: { id?: number; valores: Fila }) => {
       const q = supabase.from(tabla as never);
-      const { error } = id
-        ? await (q as any).update(valores).eq("id", id)
-        : await (q as any).insert(valores);
+      const { data, error } = id
+        ? await (q as any).update(valores).eq("id", id).select("id").single()
+        : await (q as any).insert(valores).select("id").single();
       if (error) throw new Error(error.message);
+      if (!data) throw new Error("No tienes permiso para modificar este registro.");
     },
     onSuccess: (_d, vars) => {
       qc.invalidateQueries({ queryKey: [queryKey] });
@@ -27,7 +28,7 @@ export function useGuardarRegistro(tabla: string, queryKey: string, etiqueta: st
     onError: (e: Error) =>
       toast.error("No se pudo guardar", {
         description: /row-level security|JWT|permission/i.test(e.message)
-          ? "Inicia sesión para poder crear o editar registros."
+          ? "Tu cuenta no tiene permiso para guardar este registro en esta empresa."
           : e.message,
       }),
   });
@@ -44,10 +45,11 @@ export function useEliminarRegistro(
   return useMutation({
     mutationFn: async (id: number) => {
       const q = supabase.from(tabla as never) as any;
-      const { error } = soft
-        ? await q.update({ deleted_at: new Date().toISOString() }).eq("id", id)
-        : await q.delete().eq("id", id);
+      const { data, error } = soft
+        ? await q.update({ deleted_at: new Date().toISOString() }).eq("id", id).select("id").single()
+        : await q.delete().eq("id", id).select("id").single();
       if (error) throw new Error(error.message);
+      if (!data) throw new Error("No tienes permiso para eliminar este registro.");
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: [queryKey] });
@@ -57,7 +59,7 @@ export function useEliminarRegistro(
     onError: (e: Error) =>
       toast.error("No se pudo eliminar", {
         description: /row-level security|JWT|permission/i.test(e.message)
-          ? "Inicia sesión para poder eliminar registros."
+          ? "Tu cuenta no tiene permiso para eliminar este registro en esta empresa."
           : e.message,
       }),
   });

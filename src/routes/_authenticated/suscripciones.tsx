@@ -14,7 +14,7 @@ import { RecordFormDialog } from "@/components/shared/RecordFormDialog";
 import { camposSuscripcion, filaSuscripcion } from "@/lib/form-defs";
 import { useGuardarRegistro } from "@/lib/mutations";
 
-export const Route = createFileRoute("/suscripciones")({
+export const Route = createFileRoute("/_authenticated/suscripciones")({
   head: () => ({
     meta: [
       { title: "Suscripciones y renovaciones · ServiceHub" },
