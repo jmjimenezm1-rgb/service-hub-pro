@@ -43,6 +43,13 @@
       "when": 1793751662955,
       "tag": "0005_assign_core_records_to_organization",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793837683677,
+      "tag": "0006_core_organization_isolation",
+      "breakpoints": true
     }
   ]
 }

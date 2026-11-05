@@ -184,6 +184,7 @@ export type Database = {
           datos_despues: Json | null
           id: number
           operacion: string
+          organizacion_id: string | null
           registro_id: string
           tabla: string
         }
@@ -194,6 +195,7 @@ export type Database = {
           datos_despues?: Json | null
           id?: number
           operacion: string
+          organizacion_id?: string | null
           registro_id: string
           tabla: string
         }
@@ -204,10 +206,19 @@ export type Database = {
           datos_despues?: Json | null
           id?: number
           operacion?: string
+          organizacion_id?: string | null
           registro_id?: string
           tabla?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "auditoria_organizacion_id_fkey"
+            columns: ["organizacion_id"]
+            isOneToOne: false
+            referencedRelation: "organizaciones"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       cliente_historial: {
         Row: {
@@ -687,6 +698,7 @@ export type Database = {
           id: number
           modulo: string
           nivel: string
+          organizacion_id: string | null
           rol_id: number
         }
         Insert: {
@@ -694,6 +706,7 @@ export type Database = {
           id?: number
           modulo: string
           nivel?: string
+          organizacion_id?: string | null
           rol_id: number
         }
         Update: {
@@ -701,9 +714,17 @@ export type Database = {
           id?: number
           modulo?: string
           nivel?: string
+          organizacion_id?: string | null
           rol_id?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "rol_permisos_organizacion_id_fkey"
+            columns: ["organizacion_id"]
+            isOneToOne: false
+            referencedRelation: "organizaciones"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "rol_permisos_rol_id_fkey"
             columns: ["rol_id"]
