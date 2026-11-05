@@ -40,7 +40,7 @@ import {
 } from "@/lib/db";
 import { eur, fecha } from "@/lib/mock-data";
 
-export const Route = createFileRoute("/crm/$clienteId")({
+export const Route = createFileRoute("/_authenticated/crm/$clienteId")({
   head: () => ({
     meta: [
       { title: "Ficha de cliente · ServiceHub" },

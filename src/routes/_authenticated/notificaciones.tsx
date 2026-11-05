@@ -53,7 +53,7 @@ import {
 } from "@/lib/form-defs";
 import { useEliminarRegistro, useGuardarRegistro } from "@/lib/mutations";
 
-export const Route = createFileRoute("/notificaciones")({
+export const Route = createFileRoute("/_authenticated/notificaciones")({
   head: () => ({
     meta: [
       { title: "Notificaciones y alertas · ServiceHub" },
