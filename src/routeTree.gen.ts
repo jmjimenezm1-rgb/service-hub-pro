@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedAplicacionesRouteImport } from './routes/_authenticated/aplicaciones'
 import { Route as AuthenticatedAuditoriaRouteImport } from './routes/_authenticated/auditoria'
 import { Route as AuthenticatedConsumoRouteImport } from './routes/_authenticated/consumo'
+import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedNotificacionesRouteImport } from './routes/_authenticated/notificaciones'
 import { Route as AuthenticatedOrganizacionesRouteImport } from './routes/_authenticated/organizaciones'
 import { Route as AuthenticatedPermisosRouteImport } from './routes/_authenticated/permisos'
@@ -51,6 +52,11 @@ const AuthenticatedAuditoriaRoute = AuthenticatedAuditoriaRouteImport.update({
 const AuthenticatedConsumoRoute = AuthenticatedConsumoRouteImport.update({
   id: '/consumo',
   path: '/consumo',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedNotificacionesRoute =
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/aplicaciones': typeof AuthenticatedAplicacionesRoute
   '/auditoria': typeof AuthenticatedAuditoriaRoute
   '/consumo': typeof AuthenticatedConsumoRoute
+  '/home': typeof AuthenticatedHomeRoute
   '/notificaciones': typeof AuthenticatedNotificacionesRoute
   '/organizaciones': typeof AuthenticatedOrganizacionesRoute
   '/permisos': typeof AuthenticatedPermisosRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByTo {
   '/aplicaciones': typeof AuthenticatedAplicacionesRoute
   '/auditoria': typeof AuthenticatedAuditoriaRoute
   '/consumo': typeof AuthenticatedConsumoRoute
+  '/home': typeof AuthenticatedHomeRoute
   '/notificaciones': typeof AuthenticatedNotificacionesRoute
   '/organizaciones': typeof AuthenticatedOrganizacionesRoute
   '/permisos': typeof AuthenticatedPermisosRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/_authenticated/aplicaciones': typeof AuthenticatedAplicacionesRoute
   '/_authenticated/auditoria': typeof AuthenticatedAuditoriaRoute
   '/_authenticated/consumo': typeof AuthenticatedConsumoRoute
+  '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/notificaciones': typeof AuthenticatedNotificacionesRoute
   '/_authenticated/organizaciones': typeof AuthenticatedOrganizacionesRoute
   '/_authenticated/permisos': typeof AuthenticatedPermisosRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/aplicaciones'
     | '/auditoria'
     | '/consumo'
+    | '/home'
     | '/notificaciones'
     | '/organizaciones'
     | '/permisos'
@@ -159,6 +169,7 @@ export interface FileRouteTypes {
     | '/aplicaciones'
     | '/auditoria'
     | '/consumo'
+    | '/home'
     | '/notificaciones'
     | '/organizaciones'
     | '/permisos'
@@ -174,6 +185,7 @@ export interface FileRouteTypes {
     | '/_authenticated/aplicaciones'
     | '/_authenticated/auditoria'
     | '/_authenticated/consumo'
+    | '/_authenticated/home'
     | '/_authenticated/notificaciones'
     | '/_authenticated/organizaciones'
     | '/_authenticated/permisos'
@@ -233,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConsumoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/home': {
+      id: '/_authenticated/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AuthenticatedHomeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/notificaciones': {
       id: '/_authenticated/notificaciones'
       path: '/notificaciones'
@@ -289,6 +308,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAplicacionesRoute: typeof AuthenticatedAplicacionesRoute
   AuthenticatedAuditoriaRoute: typeof AuthenticatedAuditoriaRoute
   AuthenticatedConsumoRoute: typeof AuthenticatedConsumoRoute
+  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedNotificacionesRoute: typeof AuthenticatedNotificacionesRoute
   AuthenticatedOrganizacionesRoute: typeof AuthenticatedOrganizacionesRoute
   AuthenticatedPermisosRoute: typeof AuthenticatedPermisosRoute
@@ -302,6 +322,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAplicacionesRoute: AuthenticatedAplicacionesRoute,
   AuthenticatedAuditoriaRoute: AuthenticatedAuditoriaRoute,
   AuthenticatedConsumoRoute: AuthenticatedConsumoRoute,
+  AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedNotificacionesRoute: AuthenticatedNotificacionesRoute,
   AuthenticatedOrganizacionesRoute: AuthenticatedOrganizacionesRoute,
   AuthenticatedPermisosRoute: AuthenticatedPermisosRoute,
